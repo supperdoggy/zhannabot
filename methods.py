@@ -15,7 +15,7 @@ def getName(userid):
     return name
 
 def getDanet():
-    firstPart = ["Видимо ", "Точно ", "Я сказал ", "Походу "
+    firstPart = ["Видимо ", "Точно ", "Я сказала ", "Походу "
                 , "Мне мама сказала что ", "Надеюсь что ", "Звезды сказали "]
     secondPart = ["да", "нет"]
     answer = random.choice(firstPart) + random.choice(secondPart)
