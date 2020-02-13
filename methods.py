@@ -8,7 +8,7 @@ def getName(userid):
     if userid == TATI_ID:
         name = "Тати"
     elif userid == ZHANNA_ID:
-        name == "Жанна"
+        name = "Жанна"
     else:
         name = None
 
