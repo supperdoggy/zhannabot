@@ -36,6 +36,16 @@ def fortune(message):
 def danet(message):
     zhanna.send_message(message.chat.id, "%s" % getDanet())
 
+@zhanna.message_handler(commands=["somilye"])
+def somilye(message):
+    alcohol = getAlcohol()
+    if alcohol != "Хватит пить!":
+        answer = "Сегодня мы пьем %s" % alcohol
+    else:
+        answer = "Хватит пить!"
+    zhanna.send_message(message.chat.id, "%s" % answer)
+
+
 @zhanna.message_handler(content_types=["text"])
 def main(message):
     print(message)
