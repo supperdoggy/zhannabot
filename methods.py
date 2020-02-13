@@ -27,7 +27,7 @@ def getFortuneCookie(message):
             data = getData()
             answer = random.choice(data)
         else:
-            answer = "Ты уже узнал свой горокоп на сегодня!"
+            answer = "Ты уже узнал свой гороскоп на сегодня!"
     else:
         data = getData()
         answer = random.choice(data)
