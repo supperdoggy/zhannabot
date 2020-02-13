@@ -4,11 +4,23 @@ from data import *
 import os
 import datetime
 from constants import *
+from methods import *
+
+# TODO: rename bot from petya to zhanna idk....
+# TODO: more functions
+# TODO: more punk
 
 petya = telebot.TeleBot(TOKEN)
 @petya.message_handler(commands=["start"])
 def greetings(message):
-    petya.send_message(message.chat.id, "Привет, zhanna")
+    if message.chat.id == ZHANNA_ID:
+        petya.send_message(message.chat.id, "Привет, зайка по имени Жанна")
+    
+    elif message.chat.id == TATI_ID:
+        petya.send_message(message.chat.id, "Привет, зайчик по имени Тати")
+    
+    else:
+        petya.send_message(message.chat.id, "Привет, зайка")
 
 @petya.message_handler(commands=["getall"])
 def getAll(message):
@@ -18,41 +30,23 @@ def getAll(message):
 
 @petya.message_handler(commands=["fortune"])
 def fortune(message):
-    try:
-        if os.path.exists("data/%s.txt" % message.chat.id):
-            d = getLastTimePlayed()
-            if str(datetime.datetime.now().day) != str(d):
-                data = getData()
-                answer = random.choice(data)
-                petya.send_message(message.chat.id,  "%s" % answer)
 
-            else:
-                petya.send_message(message.chat.id, "Ты уже играл сегодня!")
-        else:
-            data = getData()
-            answer = random.choice(data)
-            petya.send_message(message.chat.id,  "%s" % answer)
-        
-    except:
-        pass
+    petya.send_message(message.chat.id, "%s" % getFortuneCookie(message))
     editLastTimePlayed(message)
 
 @petya.message_handler(commands=["danet"])
 def danet(message):
-    firstPart = ["Видимо ", "Точно ", "Я сказал ", "Походу "
-    , "Мне мама сказала что ", "Надеюсь что ", "Звезды сказали "]
-    secondPart = ["да", "нет"]
-    answer = random.choice(firstPart) + random.choice(secondPart)
-    petya.send_message(message.chat.id, "%s" %answer)
+    petya.send_message(message.chat.id, "%s" % getDanet())
 
 @petya.message_handler(content_types=["text"])
 def main(message):
     print(message)
-    if message.text.lower() == "у меня есть стрелки":
-        petya.send_message(message.chat.id, "Жанна крутая!")
-    elif message.text.lower() == "у меня нету стрелок":
-        petya.send_message(message.chat.id, "Жанна не очень крутая")
-    else:
-        petya.send_message(message.chat.id, "Я понимаю только:\nУ меня есть стрелки\nУ меня нету стрелок")
+    name = getName(message.chat.id)
+
+    if name:
+        if message.text.lower() == "у меня есть стрелки":
+            petya.send_message(message.chat.id, "%s крутая!" % name)
+        elif message.text.lower() == "у меня нету стрелок":
+            petya.send_message(message.chat.id, "%s не очень крутая" % name)
 
 petya.polling(none_stop=True)
