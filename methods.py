@@ -13,6 +13,7 @@ def start(chatId):
         name = "только не выключай меня создатель-господин"
     else:
         name = "зайка"
+
     return name
 
 def getName(userid):
@@ -61,4 +62,13 @@ def getAlcohol(chatId):
         types.append("что угодно только не водка тати нет")
 
     answer = random.choice(types)
+
     return answer
+
+def consoleOutput(message, answer):
+    print("Мне написал человек с юзернеймом: %s" % message.chat.username)
+    print("Имя у него: %s" %message.chat.first_name)
+    print("Фамилия у него: %s" %message.chat.last_name)
+    print("Текст сообщения: %s" %message.text)
+    print("Я ответила: %s" % answer)
+    print("=" * 10)

@@ -11,17 +11,22 @@ from methods import *
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
 def greetings(message):
-    name = start(message.chat.id)
-    zhanna.send_message(message.chat.id, "Привет, %s" %name)
+    answer = "Привет, %s" %start(message.chat.id)
+    zhanna.send_message(message.chat.id, "%s" %answer)
+    consoleOutput(message, answer)
 
 @zhanna.message_handler(commands=["fortune"])
 def fortune(message):
-    zhanna.send_message(message.chat.id, "%s" % getFortuneCookie(message))
+    answer = getFortuneCookie(message)
+    zhanna.send_message(message.chat.id, "%s" %answer)
     editLastTimePlayed(message)
+    consoleOutput(message, answer)
 
 @zhanna.message_handler(commands=["danet"])
 def danet(message):
-    zhanna.send_message(message.chat.id, "%s" % getDanet())
+    answer = getDanet()
+    zhanna.send_message(message.chat.id, "%s" % answer)
+    consoleOutput(message, answer)
 
 @zhanna.message_handler(commands=["somilye"])
 def somilye(message):
@@ -30,8 +35,8 @@ def somilye(message):
         answer = "Сегодня мы пьем %s" % alcohol
     else:
         answer = "Хватит пить!"
-
     zhanna.send_message(message.chat.id, "%s" % answer)
+    consoleOutput(message, answer)
 
 @zhanna.message_handler(content_types=["text"])
 def main(message):
@@ -40,8 +45,10 @@ def main(message):
 
     if name:
         if message.text.lower() == "у меня есть стрелки":
-            zhanna.send_message(message.chat.id, "%s крутая!" % name)
+            answer = "%s крутая!" %name
         elif message.text.lower() == "у меня нету стрелок":
-            zhanna.send_message(message.chat.id, "%s не очень крутая" % name)
+            answer = "%s не очень крутая" % name
+        zhanna.send_message(message.chat.id, "%s" %answer)
+    consoleOutput(message, answer)
 
 zhanna.polling(none_stop=True)
