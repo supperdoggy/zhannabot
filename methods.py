@@ -4,19 +4,30 @@ import os
 from data import *
 import datetime
 
+def start(chatId):
+    if chatId == ZHANNA_ID:
+        name = "зайка по имени Жанна"
+    elif chatId == TATI_ID:
+        name = "зайчик по имени Тати"
+    elif chatId == NEMOKS_ID:
+        name = "только не выключай меня создатель-господин"
+    else:
+        name = "зайка"
+    return name
+
 def getName(userid):
     if userid == TATI_ID:
         name = "Тати"
     elif userid == ZHANNA_ID:
         name = "Жанна"
     else:
-        name = None
+        name = False
 
     return name
 
 def getDanet():
-    firstPart = ["Видимо ", "Точно ", "Я сказала ", "Походу "
-                , "Мне мама сказала что ", "Надеюсь что ", "Звезды сказали "]
+    firstPart = ["Видимо ", "Точно ", "Я сказала ", "Походу ", 
+                "Мне мама сказала что ", "Надеюсь что ", "Звезды сказали "]
     secondPart = ["да", "нет"]
     answer = random.choice(firstPart) + random.choice(secondPart)
     return answer
@@ -35,10 +46,19 @@ def getFortuneCookie(message):
 
     return answer
 
-def getAlcohol():
+def getAlcohol(chatId):
+    if chatId == NEMOKS_ID:
+        return "тільки водку, Макс, тільки водку..."
+
     types = ["Хватит пить!", "наливка в пьяной вишне", "наливка в белом наливе",
-            "сидр", "глинтвейн", "вино", "шампанское", "джин-тоник", "ром-кола",
-            "виски-кола", "что угодно только не водка жанна нет", "рево", "лонгер",
-            "рандомный коктейль", "шоты", "самогоночку", "водочку", "все что нальют"]
+                "сидр", "глинтвейн", "вино", "шампанское", "джин-тоник", "ром-кола",
+                "виски-кола", "рево", "лонгер", "рандомный коктейль",
+                "шоты", "наливки", "самогоночку", "водочку", "все что нальют"]
+    
+    if chatId == ZHANNA_ID:
+        types.append("что угодно только не водка жанна нет")
+    elif chatId == TATI_ID:
+        types.append("что угодно только не водка тати нет")
+
     answer = random.choice(types)
     return answer

@@ -11,24 +11,11 @@ from methods import *
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
 def greetings(message):
-    if message.chat.id == ZHANNA_ID:
-        zhanna.send_message(message.chat.id, "Привет, зайка по имени Жанна")
-    
-    elif message.chat.id == TATI_ID:
-        zhanna.send_message(message.chat.id, "Привет, зайчик по имени Тати")
-    
-    else:
-        zhanna.send_message(message.chat.id, "Привет, зайка")
-
-@zhanna.message_handler(commands=["getall"])
-def getAll(message):
-    data = getData()
-    for n in data:
-        zhanna.send_message(message.chat.id, "%s" %n)
+    name = start(message.chat.id)
+    zhanna.send_message(message.chat.id, "Привет, %s" %name)
 
 @zhanna.message_handler(commands=["fortune"])
 def fortune(message):
-
     zhanna.send_message(message.chat.id, "%s" % getFortuneCookie(message))
     editLastTimePlayed(message)
 
@@ -38,13 +25,13 @@ def danet(message):
 
 @zhanna.message_handler(commands=["somilye"])
 def somilye(message):
-    alcohol = getAlcohol()
+    alcohol = getAlcohol(message.chat.id)
     if alcohol != "Хватит пить!":
         answer = "Сегодня мы пьем %s" % alcohol
     else:
         answer = "Хватит пить!"
-    zhanna.send_message(message.chat.id, "%s" % answer)
 
+    zhanna.send_message(message.chat.id, "%s" % answer)
 
 @zhanna.message_handler(content_types=["text"])
 def main(message):
