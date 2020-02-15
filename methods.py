@@ -66,9 +66,9 @@ def getAlcohol(chatId):
     return answer
 
 def consoleOutput(message, answer):
-    print("Мне написал человек с юзернеймом: %s" % message.chat.username)
-    print("Имя у него: %s" %message.chat.first_name)
-    print("Фамилия у него: %s" %message.chat.last_name)
+    print("Мне написал человек с юзернеймом: %s" % message.from_user.username)
+    print("Имя у него: %s" %message.from_user.first_name)
+    print("Фамилия у него: %s" %message.from_user.last_name)
     print("Текст сообщения: %s" %message.text)
     print("Я ответила: %s" % answer)
     print("=" * 10)
