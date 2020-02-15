@@ -77,7 +77,7 @@ def structuringTosts():
 
  
 def editLastTimePlayed(message):
-    f = open("data/%s.txt" % message.chat.id, "w+")
+    f = open("data/%s.txt" % message.from_user.id, "w+")
     f.write(str(datetime.datetime.now().day))
     f.close()
 
