@@ -22,6 +22,12 @@ def fortune(message):
     editLastTimePlayed(message)
     consoleOutput(message, answer)
 
+@zhanna.message_handler(commands=["tost"])
+def tost(message):
+    answer = random.choice(getTosts())
+    zhanna.send_message(message.chat.id, "%s" %answer)
+    consoleOutput(message, answer)
+
 @zhanna.message_handler(commands=["danet"])
 def danet(message):
     answer = getDanet()
@@ -40,8 +46,8 @@ def somilye(message):
 
 @zhanna.message_handler(content_types=["text"])
 def main(message):
-    print(message)
     name = getName(message.chat.id)
+    answer = None
 
     if name:
         if message.text.lower() == "у меня есть стрелки":
