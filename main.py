@@ -46,15 +46,16 @@ def somilye(message):
 
 @zhanna.message_handler(content_types=["text"])
 def main(message):
-    name = getName(message.chat.id)
+    name = getName(message.from_user.id)
     answer = None
 
     if name:
         if message.text.lower() == "у меня есть стрелки":
             answer = "%s крутая!" %name
+            zhanna.reply_to(message, "%s" %answer)
         elif message.text.lower() == "у меня нету стрелок":
             answer = "%s не очень крутая" % name
-        zhanna.reply_to(message, "%s" %answer)
+            zhanna.reply_to(message, "%s" %answer)
     consoleOutput(message, answer)
 
 zhanna.polling(none_stop=True)
