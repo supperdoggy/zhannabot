@@ -82,7 +82,7 @@ def editLastTimePlayed(message):
     f.close()
 
 def getLastTimePlayed(message):
-    f = open("data/%s.txt" % message.chat.id, "r")
+    f = open("data/%s.txt" % message.from_user.id, "r")
     d = f.read()
     f.close()
     return d
