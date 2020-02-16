@@ -74,8 +74,39 @@ def structuringTosts():
     f = open("Tosts.json", "w+")
     json.dump(lineList, f)
 
+def structNeverEver():
+    with open("neverever.txt") as f:
+        lineList = f.readlines()
+    f.close()
 
+    i = 0
+    while i < len(lineList):
+        if lineList[i] == "\n":
+            lineList.pop(i)
+        j = 0
+        trash = ""
+        for n in lineList[i]:
+            if n != "Я":
+                trash += n
+            else:
+                lineList[i] = lineList[i].replace("%s" %trash, "")
+        i+=1
+
+    with open("neverever2.txt") as f:
+        lineList2 = f.readlines()
+    f.close()
+    for n in lineList2:
+        lineList.append(n)
+    print(lineList)
+    print(len(lineList))
+    f = open("neverever.json", "w+")
+    json.dump(lineList, f)
  
+def getNeverHaveIEver():
+    f = open("neverever.json", "r")
+    data = json.load(f)
+    return data
+
 def editLastTimePlayed(message):
     f = open("data/%s.txt" % message.from_user.id, "w+")
     f.write(str(datetime.datetime.now().day))
@@ -88,4 +119,4 @@ def getLastTimePlayed(message):
     return d
 
 if __name__ == "__main__":
-    structuringTosts()
+    structNeverEver()

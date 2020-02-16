@@ -44,6 +44,12 @@ def somilye(message):
     zhanna.reply_to(message, "%s" % answer)
     consoleOutput(message, answer)
 
+@zhanna.message_handler(commands=["neverhaveiever"])
+def neverhaveiever(message):
+    answer = random.choice(getNeverHaveIEver())
+    zhanna.reply_to(message, "%s" %answer)
+    consoleOutput(message, answer)
+
 @zhanna.message_handler(content_types=["text"])
 def main(message):
     name = getName(message.from_user.id)
