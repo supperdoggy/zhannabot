@@ -34,7 +34,7 @@ def getDanet():
     return answer
 
 def getFortuneCookie(message):
-    if os.path.exists("data/%s.txt" % message.chat.id):
+    if os.path.exists("data/%s.txt" % message.from_user.id):
         d = getLastTimePlayed(message)
         if str(datetime.datetime.now().day) != str(d):
             data = getData()
