@@ -64,6 +64,8 @@ def main(message):
             zhanna.reply_to(message, "%s" %answer)
     if message.text.lower().__contains__("привет") and message.text.lower().__contains__("жанна"):
         zhanna.reply_to(message, "Привет, солнце\nКак у тебя дела?")
+    elif message.text.lower().__contains__("у тебя как?"):
+        zhanna.reply_to(message, "Нормально, занимаюсь своими киберделами")
     consoleOutput(message, answer)
 
 zhanna.polling(none_stop=True)
