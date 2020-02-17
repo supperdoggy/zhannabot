@@ -3,6 +3,7 @@ import random
 import os
 from data import *
 import datetime
+import apiai, json
 
 def start(chatId):
     if chatId == ZHANNA_ID:
@@ -72,3 +73,38 @@ def consoleOutput(message, answer):
     print("Текст сообщения: %s" %message.text)
     print("Я ответила: %s" % answer)
     print("=" * 10)
+
+def getAnswer(message):
+    name = getName(message.from_user.id)
+    if name:
+        if message.text.lower() == "у меня есть стрелки":
+            answer = "%s крутая!" %name
+            return answer
+        elif message.text.lower() == "у меня нету стрелок":
+            answer = "%s не очень крутая" % name
+            return answer
+    
+    request = apiai.ApiAI(APIAITOKEN).text_request()
+    request.lang = "ru"
+    request.session_id = "zhanna"
+    request.query = message.text
+    responseJson = json.loads(request.getresponse().read().decode("utf-8"))
+    answer = responseJson["result"]["fulfillment"]["speech"]
+    
+    if message.chat.type != "private":
+        try:
+            if message.text.lower().__contains__("жанна") or message.reply_to_message.from_user.id == 1058731629:
+                if answer:
+                    return answer
+                else:
+                    answer = message.text + "?"
+                    return answer
+        except:
+            pass
+    else:
+        if answer:
+            return answer
+        else:
+            answer = message.text + "?"
+            return answer
+    return None

@@ -5,7 +5,7 @@ import os
 import datetime
 from constants import *
 from methods import *
-
+import apiai, json
 # TODO: more punk
 
 zhanna = telebot.TeleBot(TOKEN)
@@ -52,20 +52,9 @@ def neverhaveiever(message):
 
 @zhanna.message_handler(content_types=["text"])
 def main(message):
-    name = getName(message.from_user.id)
-    answer = None
+    answer = getAnswer(message)
+    zhanna.reply_to(message, "%s" %answer)
 
-    if name:
-        if message.text.lower() == "у меня есть стрелки":
-            answer = "%s крутая!" %name
-            zhanna.reply_to(message, "%s" %answer)
-        elif message.text.lower() == "у меня нету стрелок":
-            answer = "%s не очень крутая" % name
-            zhanna.reply_to(message, "%s" %answer)
-    if message.text.lower().__contains__("привет") and message.text.lower().__contains__("жанна"):
-        zhanna.reply_to(message, "Привет, солнце\nКак у тебя дела?")
-    elif message.text.lower().__contains__("у тебя как?"):
-        zhanna.reply_to(message, "Нормально, занимаюсь своими киберделами")
     consoleOutput(message, answer)
 
 zhanna.polling(none_stop=True)
