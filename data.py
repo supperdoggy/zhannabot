@@ -28,20 +28,16 @@ def newUser(message):
         "first_name": message.from_user.first_name,
         "last_name": message.from_user.last_name,
         "last_time_played_fortune": -1,
-        "never_have_I_ever": []
+        "never_have_I_ever": [],
+        "questions": [],
+        "answers": []
     }
-    with open('data/%s.json' %message.from_user.id, 'w+') as outfile:
-        json.dump(data, outfile)
-    outfile.close()
+    writeData(message, data)
 
 def editLastTimePlayed(message):
-    with open('data/%s.json' %message.from_user.id, 'r') as outfile:
-        data = json.load(outfile)
-    outfile.close()
+    data = readData(message)
     data["last_time_played_fortune"] = str(datetime.datetime.now().day)
-    with open('data/%s.json' %message.from_user.id, 'w+') as outfile:
-       json.dump(data, outfile)
-    outfile.close()
+    writeData(message, data)
 
 def getLastTimePlayed(message):
     if not userExist(message.from_user.id):
@@ -50,7 +46,38 @@ def getLastTimePlayed(message):
         getLastTimePlayed(message)
     else:
         print("user exist")
-        with open('data/%s.json' %message.from_user.id) as outfile:
-            data = json.load(outfile)
-        outfile.close()
+        data = readData(message)
         return data["last_time_played_fortune"]
+
+def storeAnswerAndQuestion(message, answer):
+    if userExist(message.from_user.id):
+        data = readData(message)
+
+        data["questions"].append(message.text)
+        data["answers"].append(answer)
+
+        writeData(message, data)
+    else:
+        newUser(message)
+        storeAnswerAndQuestion(message, answer)
+
+def readData(message):
+    with open('data/%s.json' %message.from_user.id) as outfile:
+        data = json.load(outfile)
+    outfile.close()
+    return data
+
+def writeData(message, data):
+    with open('data/%s.json' %message.from_user.id, 'w+') as outfile:
+        json.dump(data, outfile)
+    outfile.close()
+
+def appendNeverEver(message, answer):
+    data = readData(message)
+    data["never_have_I_ever"].append(answer)
+    writeData(message, data)
+
+def isInNeverEver(message, answer):
+    data = readData(message)
+    return answer in data["never_have_I_ever"]
+    

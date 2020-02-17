@@ -8,7 +8,6 @@ from methods import *
 import apiai, json
 
 # TODO: more punk
-# TODO: store data of answers and user inputs
 # TODO: append into list neverhaveiever thigns that user saw, and create a command to delete clean all list
 
 zhanna = telebot.TeleBot(TOKEN)
@@ -47,10 +46,24 @@ def somilye(message):
     zhanna.reply_to(message, "%s" % answer)
     consoleOutput(message, answer)
 
+@zhanna.message_handler(commands=["clear"])
+def clear(message):
+    data = readData(message)
+    data["never_have_I_ever"].clear()
+    writeData(message, data)
+    zhanna.reply_to(message, "Я удалила историю игры")
+
 @zhanna.message_handler(commands=["neverhaveiever"])
 def neverhaveiever(message):
     answer = random.choice(getNeverHaveIEver())
+    if isInNeverEver(message, answer):
+        try:
+            neverhaveiever(message)
+        except:
+            answer = getNeverHaveIEver()[0]
+
     zhanna.reply_to(message, "%s" %answer)
+    appendNeverEver(message, answer)
     consoleOutput(message, answer)
 
 @zhanna.message_handler(content_types=["text"])

@@ -70,6 +70,7 @@ def consoleOutput(message, answer):
     print("Текст сообщения: %s" %message.text)
     print("Я ответила: %s" % answer)
     print("=" * 10)
+    storeAnswerAndQuestion(message, answer)
 
 def getAnswer(message):
     name = getName(message.from_user.id)
