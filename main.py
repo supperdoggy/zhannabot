@@ -53,7 +53,8 @@ def neverhaveiever(message):
 @zhanna.message_handler(content_types=["text"])
 def main(message):
     answer = getAnswer(message)
-    zhanna.reply_to(message, "%s" %answer)
+    if answer != None:
+        zhanna.reply_to(message, "%s" %answer)
 
     consoleOutput(message, answer)
 
