@@ -6,7 +6,10 @@ import datetime
 from constants import *
 from methods import *
 import apiai, json
+
 # TODO: more punk
+# TODO: store data of answers and user inputs
+# TODO: append into list neverhaveiever thigns that user saw, and create a command to delete clean all list
 
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
@@ -55,7 +58,8 @@ def main(message):
     answer = getAnswer(message)
     if answer != None:
         zhanna.reply_to(message, "%s" %answer)
-
+    if not userExist(message.from_user.id):
+        newUser(message)
     consoleOutput(message, answer)
 
 zhanna.polling(none_stop=True)

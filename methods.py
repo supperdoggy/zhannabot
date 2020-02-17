@@ -27,6 +27,7 @@ def getName(userid):
 
     return name
 
+
 def getDanet():
     firstPart = ["Видимо ", "Точно ", "Я сказала ", "Походу ", 
                 "Мне мама сказала что ", "Надеюсь что ", "Звезды сказали "]
@@ -35,16 +36,12 @@ def getDanet():
     return answer
 
 def getFortuneCookie(message):
-    if os.path.exists("data/%s.txt" % message.from_user.id):
-        d = getLastTimePlayed(message)
-        if str(datetime.datetime.now().day) != str(d):
-            data = getData()
-            answer = random.choice(data)
-        else:
-            answer = "Ты уже узнал свой гороскоп на сегодня!"
-    else:
+    d = getLastTimePlayed(message)
+    if str(datetime.datetime.now().day) != str(d):
         data = getData()
         answer = random.choice(data)
+    else:
+        answer = "Ты уже узнал свой гороскоп на сегодня!"
 
     return answer
 
