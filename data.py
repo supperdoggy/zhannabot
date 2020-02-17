@@ -101,7 +101,27 @@ def structNeverEver():
     print(len(lineList))
     f = open("neverever.json", "w+")
     json.dump(lineList, f)
- 
+
+def structDate():
+    with open("date.txt") as f:
+        string = f.read()
+    f.close()
+    i = 0
+    lineList = []
+    question = ""
+    while i < len(string):
+        if string[i] ==  "." or string[i] == "?":
+            question+=string[i]
+            lineList.append(question)
+            question = ""
+        else:
+            question += string[i]
+        i += 1
+    lineList.pop(13)
+    for n in lineList:
+        print(n)
+    
+
 def getNeverHaveIEver():
     f = open("neverever.json", "r")
     data = json.load(f)
@@ -119,4 +139,4 @@ def getLastTimePlayed(message):
     return d
 
 if __name__ == "__main__":
-    structNeverEver()
+    structDate()
