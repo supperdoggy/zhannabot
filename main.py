@@ -8,7 +8,6 @@ from methods import *
 import apiai, json
 
 # TODO: more punk
-# TODO: append into list neverhaveiever thigns that user saw, and create a command to delete clean all list
 
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
