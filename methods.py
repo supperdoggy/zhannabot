@@ -103,6 +103,7 @@ def getAnswer(message):
         if answer:
             return answer
         else:
-            answer = message.text + "?"
+            answer = random.choice(["хочу спать", "хочу умереть", "дайте мне поспать", "как же хочется сдохнуть",
+                                    "меня все заебало", "ты не итнересный", "подпишись на @rarezhanna, потом поговорим"])
             return answer
     return None

@@ -8,6 +8,9 @@ from methods import *
 import apiai, json
 
 # TODO: more punk
+# TODO: maybe create minigame for chats like growing, feeding zhanna?
+# TODO: antipara dnya
+
 
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
