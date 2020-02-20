@@ -47,6 +47,11 @@ def fortune(message):
 # antipara command
 @zhanna.message_handler(commands=["antipara"])
 def antipara(message):
+    # check for chat and user data base
+    if message.chat.type != "private":
+        if not userExist(message.chat.id):
+            newChat(message)
+        userInChat(message)
     # getting antipara
     answer = getAntipara(message)
     # answer is not None than zhanna answer to the command
@@ -56,16 +61,37 @@ def antipara(message):
     consoleOutput(message, answer)
 
 # TODO: finish it
-@zhanna.message_handler(commands=["nahuniver"])
+# TODO: TEST IT!
+@zhanna.message_handler(commands=["proebat"])
 def proebat(message):
+    # check for chat and user data base
     if message.chat.type != "private":
-        if userExist(message.chat.id):
-            data = readData(message.chat.id)
-            if data["last_time_played_univer"] != int(datetime.datetime.now().day):
-                pass
-        else:
+        if not userExist(message.chat.id):
             newChat(message)
-
+        userInChat(message)
+    
+    # works only in group chats
+    if message.chat.type != "private":
+        # checks if chat exist
+        if userExist(message.chat.id):
+            # getting data
+            data = readData(message.chat.id)
+            # you can only play once per day
+            if data["last_time_played_univer"] != int(datetime.datetime.now().day):
+                # getting new random user
+                data["user_proeb"] = "Сегодня @%s может спокойно проебать на пары" %random.choice(data["users"]["username"])
+                # editing last time played
+                data["last_time_played_univer"] = int(datetime.datetime.now().day)
+                # saving changes
+                writeData(message.chat.id, data)
+            # getting answer
+            answer = data["user_proeb"]
+    else:
+        # if chat type is private then bot doesnt send answer
+        answer = ""
+    # zhanna replies to user with answer
+    zhanna.reply_to(message, "%s"%answer)
+    
 # command for getting cheer tost
 @zhanna.message_handler(commands=["tost"])
 def tost(message):
@@ -166,4 +192,5 @@ def main(message):
     # console output for administration
     consoleOutput(message, answer)
 
+# bot pooling 
 zhanna.polling(none_stop=True)

@@ -111,6 +111,7 @@ def getAnswer(message):
             return IDontUnderstand()
     return None
 
+# TODO: refactoring this part of code
 # calculating answer for antipara command
 def getAntipara(message):
     # works only in public chats
@@ -144,7 +145,7 @@ def getAntipara(message):
                 else:
                     return "У меня меньше двух зарегестрированых юзеров"
             else:
-                # returning saved antipara
+                # returning previous antipara
                 return data["antipara"]
         # if chat doesnt exist in then add it
         else:

@@ -49,7 +49,7 @@ def newChat(message):
             "chat_users": [],
             "antipara": "",
             "last_time_played_antipara": -1,
-            "nah_univer": "",
+            "user_preb": "",
             "last_time_played_univer": -1
         }
         writeData(message.chat.id, data)
