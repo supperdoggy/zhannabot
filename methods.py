@@ -14,8 +14,17 @@ def start(chatId):
         name = "только не выключай меня создатель-господин"
     else:
         name = "зайка"
+    answer = "Привет, %s" %name
+    return answer
 
-    return name
+def getNHIEAnswer(message):
+    answer = random.choice(getNeverHaveIEver())
+    if isInNeverEver(message, answer):
+        try:
+            getNHIEAnswer(message)
+        except:
+            return getNeverHaveIEver()[0]
+    return answer
 
 def getName(userid):
     if userid == TATI_ID:
@@ -58,9 +67,12 @@ def getAlcohol(chatId):
     elif chatId == TATI_ID:
         types.append("что угодно только не водка тати нет")
 
-    answer = random.choice(types)
+    alcohol = random.choice(types)
 
-    return answer
+    if alcohol != "Хватит пить!":
+        return "Сегодня мы пьем %s" % alcohol
+    else:
+        return "Хватит пить!"
 
 def consoleOutput(message, answer):
     print("Мне написал человек с юзернеймом: %s" % message.from_user.username)
@@ -70,6 +82,9 @@ def consoleOutput(message, answer):
     print("Я ответила: %s" % answer)
     print("=" * 10)
     storeAnswerAndQuestion(message, answer)
+
+def getTostAnswer():
+    return random.choice(getTosts())
 
 def getAnswer(message):
     name = getName(message.from_user.id)
@@ -95,3 +110,48 @@ def getAnswer(message):
         else:
             return IDontUnderstand()
     return None
+
+# calculating answer for antipara command
+def getAntipara(message):
+    # works only in public chats
+    # check for chat type
+    if message.chat.type != "private":
+        # check if chat exist in base
+        if userExist(message.chat.id):
+            # getting chat data
+            data = readData(message.chat.id)
+            # you can only play it once per day
+            if data["last_time_played_antipara"] != int(datetime.datetime.now().day):
+                # check if there is at least 2 registered chat users
+                if len(data["chat_users"]) >= 2:
+                    # list which will contain two random chosen users
+                    pair = []
+                    while len(pair) != 2:
+                        # random choice from registered chat users
+                        user = random.choice(data["users"])
+                        # check if there are the same user in pair
+                        if user not in pair:
+                            # if not then append it into the pair
+                            pair.append(user)
+                    # changing last time played
+                    data["last_time_played_antipara"] = int(datetime.datetime.now().day)
+                    # changing antipara of the day
+                    data["antipara"] = "Антипара дня: @" + pair[0]["username"] + " и  @" + pair[1]["username"]
+                    # saving chat data
+                    writeData(message.chat.id, data)
+                    # returning antipara of the day
+                    return data["antipara"]
+                else:
+                    return "У меня меньше двух зарегестрированых юзеров"
+            else:
+                # returning saved antipara
+                return data["antipara"]
+        # if chat doesnt exist in then add it
+        else:
+            # creating base for chat
+            newChat(message)
+            # recursion this method
+            getAntipara(message)
+    else:
+        # if chat is public then returning None
+        return None

@@ -9,131 +9,161 @@ import apiai, json
 
 # TODO: more punk
 # TODO: maybe create minigame for chats like growing, feeding zhanna?
+# TODO: Прогульщик дня
 
+# start command
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
 def greetings(message):
+    # check for chat and user data base
     if message.chat.type != "private":
         if not userExist(message.chat.id):
             newChat(message)
         userInChat(message)
-    answer = "Привет, %s" %start(message.from_user.id)
+    # getting greetings message
+    answer = start(message.from_user.id)
+    # zhanna replies to message
     zhanna.reply_to(message, "%s" %answer)
+    # console output for administration
     consoleOutput(message, answer)
 
+# command for getting personal fortune cookie
 @zhanna.message_handler(commands=["fortune"])
 def fortune(message):
+    # check for chat and user data base
     if message.chat.type != "private":
         if not userExist(message.chat.id):
             newChat(message)
         userInChat(message)
+    # getting fortune cookie for user
     answer = getFortuneCookie(message)
+    # zhanna answering
     zhanna.reply_to(message, "%s" %answer)
+    # edditing the last time played
     editLastTimePlayed(message)
+    # console output for administration
     consoleOutput(message, answer)
 
+# antipara command
 @zhanna.message_handler(commands=["antipara"])
 def antipara(message):
-    try:
-        if message.chat.id != "private":
-            data = readData(message.chat.id)
-            if data["last_time_played"] != int(datetime.datetime.now().day):
-                if len(data["chat_users"]) >= 2:
-                    users = []
-                    while True:
-                        user = random.choice(data["chat_users"])
-                        if user not in users:
-                            users.append(user)
-                        elif len(users) == 2:
-                            break
-                    data["last_time_played"] = int(datetime.datetime.now().day)
-                    writeData(message.chat.id, data)
-                    answer = "Антипара дня: @" + users[0]["username"] + " и  @" + users[1]["username"]
-                    zhanna.reply_to(message, "%s" %answer)
-                else:
-                    answer = "У меня меньше двух зарегестрированых юзеров"
-                    zhanna.reply_to(message, "%s"%answer)
-            else:
-                answer = "Антипара уже выбрана!"
-                zhanna.reply_to(message, "%s" %answer)
-            consoleOutput(message, answer)
-    except:
-        pass
+    # getting antipara
+    answer = getAntipara(message)
+    # answer is not None than zhanna answer to the command
+    if answer:
+        zhanna.reply_to(message, "%s"%answer)
+    # console output for administration
+    consoleOutput(message, answer)
 
+# TODO: finish it
+@zhanna.message_handler(commands=["nahuniver"])
+def proebat(message):
+    if message.chat.type != "private":
+        if userExist(message.chat.id):
+            data = readData(message.chat.id)
+            if data["last_time_played_univer"] != int(datetime.datetime.now().day):
+                pass
+        else:
+            newChat(message)
+
+# command for getting cheer tost
 @zhanna.message_handler(commands=["tost"])
 def tost(message):
+    # check for chat and user data base
     if message.chat.type != "private":
         if not userExist(message.chat.id):
             newChat(message)
         userInChat(message)
-    answer = random.choice(getTosts())
+    # getting random tost as an answer for user
+    answer = getTostAnswer()
+    # replying to user
     zhanna.send_message(message.chat.id, "%s" %answer)
+    # console output for administration
     consoleOutput(message, answer)
 
+# command for getting random yes or no
 @zhanna.message_handler(commands=["danet"])
 def danet(message):
+    # check for chat and user data base
     if message.chat.type != "private":
         if not userExist(message.chat.id):
             newChat(message)
         userInChat(message)
+    # getting answer
     answer = getDanet()
+    # replying to user
     zhanna.reply_to(message, "%s" % answer)
+    # console output for administration
     consoleOutput(message, answer)
 
+# command for getting random drink
 @zhanna.message_handler(commands=["somilye"])
 def somilye(message):
+    # check for chat and user data base
     if message.chat.type != "private":
         if not userExist(message.chat.id):
             newChat(message)
         userInChat(message)
-    alcohol = getAlcohol(message.from_user.id)
-    if alcohol != "Хватит пить!":
-        answer = "Сегодня мы пьем %s" % alcohol
-    else:
-        answer = "Хватит пить!"
+    # getting random drink for user
+    answer = getAlcohol(message.from_user.id)
+    # replying to user
     zhanna.reply_to(message, "%s" % answer)
+    # console output for administration
     consoleOutput(message, answer)
 
-@zhanna.message_handler(commands=["clear"])
-def clear(message):
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
-    data = readData(message)
-    data["never_have_I_ever"].clear()
-    writeData(message, data)
-    zhanna.reply_to(message, "Я удалила историю игры")
-
+# never have i ever command
 @zhanna.message_handler(commands=["neverhaveiever"])
 def neverhaveiever(message):
+    # check for chat and user data base
     if message.chat.type != "private":
         if not userExist(message.chat.id):
             newChat(message)
         userInChat(message)
 
-    answer = random.choice(getNeverHaveIEver())
-    if isInNeverEver(message, answer):
-        try:
-            neverhaveiever(message)
-        except:
-            answer = getNeverHaveIEver()[0]
-
+    # getting random neverHaveIEver statement
+    answer = getNHIEAnswer(message)
+    # replying to user
     zhanna.reply_to(message, "%s" %answer)
+    # appending new statement into the history
     appendNeverEver(message, answer)
+    # console output for administration
     consoleOutput(message, answer)
 
-@zhanna.message_handler(content_types=["text"])
-def main(message):
-    answer = getAnswer(message)
-    if answer != None:
-        zhanna.reply_to(message, "%s" %answer)
-    if not userExist(message.from_user.id):
-        newUser(message)
+# hidden command for clearing used never have I ever
+@zhanna.message_handler(commands=["clear"])
+def clear(message):
+    # check for chat and user data base
     if message.chat.type != "private":
         if not userExist(message.chat.id):
             newChat(message)
         userInChat(message)
+    # getting data
+    data = readData(message.from_user.id)
+    # clearing history of never have i ever
+    data["never_have_I_ever"].clear()
+    # saving changes
+    writeData(message, data)
+    # replying to user
+    zhanna.reply_to(message, "Я удалила историю игры")
+
+# zhanna replyies to text
+@zhanna.message_handler(content_types=["text"])
+def main(message):
+    # checks if user exist in data base 
+    if not userExist(message.from_user.id):
+        newUser(message)
+    # check for chat and user data base
+    if message.chat.type != "private":
+        if not userExist(message.chat.id):
+            newChat(message)
+        userInChat(message)
+
+    # getting answer
+    answer = getAnswer(message)
+    # if answer is not None then zhanna replyies to user
+    if answer != None:
+        zhanna.reply_to(message, "%s" %answer)
+    # console output for administration
     consoleOutput(message, answer)
 
 zhanna.polling(none_stop=True)
