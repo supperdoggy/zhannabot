@@ -110,4 +110,3 @@ def appendNeverEver(message, answer):
 def isInNeverEver(message, answer):
     data = readData(message.from_user.id)
     return answer in data["never_have_I_ever"]
-    
