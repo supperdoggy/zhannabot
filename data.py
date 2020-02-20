@@ -2,6 +2,8 @@ import random
 import json
 import datetime
 import os
+from constants import *
+
 
 def getData():
     f = open("fortuneCookies.json", "r")
@@ -19,17 +21,21 @@ def getNeverHaveIEver():
     return data
 
 def userInChat(message):
-    data = readData(message.chat.id)
-    for n in data["chat_users"]:
-        if n["user_id"] == message.from_user.id:
-            return True
+    if userExist(message.chat.id):
+        data = readData(message.chat.id)
+        for n in data["chat_users"]:
+            if n["user_id"] == message.from_user.id:
+                return True
+        else:
+            msg = {
+                "user_id": message.from_user.id,
+                "username": message.from_user.username
+            }
+            data["chat_users"].append(msg)
+            writeData(message.chat.id, data)
     else:
-        msg = {
-            "user_id": message.from_user.id,
-            "username": message.from_user.username
-        }
-        data["chat_users"].append(msg)
-        writeData(message.chat.id, data)
+        newChat(message)
+        userInChat(message)
 
 def userExist(id):
     return os.path.exists("data/%s.json"%id)

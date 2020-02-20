@@ -9,8 +9,7 @@ import apiai, json
 
 # TODO: more punk
 # TODO: maybe create minigame for chats like growing, feeding zhanna?
-# TODO: antipara dnya
-
+# TODO: refactor code
 
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
@@ -36,28 +35,31 @@ def fortune(message):
 
 @zhanna.message_handler(commands=["antipara"])
 def antipara(message):
-    if message.chat.id != "private":
-        data = readData(message.chat.id)
-        if data["last_time_played"] != int(datetime.datetime.now().day):
-            if len(data["chat_users"]) >= 2:
-                users = []
-                while True:
-                    user = random.choice(data["chat_users"])
-                    if user not in users:
-                        users.append(user)
-                    elif len(users) == 2:
-                        break
-                data["last_time_played"] = int(datetime.datetime.now().day)
-                writeData(message.chat.id, data)
-                answer = "Антипара дня: @" + users[0]["username"] + " и  @" + users[1]["username"]
-                zhanna.reply_to(message, "%s" %answer)
+    try:
+        if message.chat.id != "private":
+            data = readData(message.chat.id)
+            if data["last_time_played"] != int(datetime.datetime.now().day):
+                if len(data["chat_users"]) >= 2:
+                    users = []
+                    while True:
+                        user = random.choice(data["chat_users"])
+                        if user not in users:
+                            users.append(user)
+                        elif len(users) == 2:
+                            break
+                    data["last_time_played"] = int(datetime.datetime.now().day)
+                    writeData(message.chat.id, data)
+                    answer = "Антипара дня: @" + users[0]["username"] + " и  @" + users[1]["username"]
+                    zhanna.reply_to(message, "%s" %answer)
+                else:
+                    answer = "У меня меньше двух зарегестрированых юзеров"
+                    zhanna.reply_to(message, "%s"%answer)
             else:
-                answer = "У меня меньше двух зарегестрированых юзеров"
-                zhanna.reply_to(message, "%s"%answer)
-        else:
-            answer = "Антипара уже выбрана!"
-            zhanna.reply_to(message, "%s" %answer)
-        consoleOutput(message, answer)
+                answer = "Антипара уже выбрана!"
+                zhanna.reply_to(message, "%s" %answer)
+            consoleOutput(message, answer)
+    except:
+        pass
 
 @zhanna.message_handler(commands=["tost"])
 def tost(message):

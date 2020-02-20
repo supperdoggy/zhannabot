@@ -3,7 +3,7 @@ import random
 import os
 from data import *
 import datetime
-import apiai, json
+from ml import *
 
 def start(chatId):
     if chatId == ZHANNA_ID:
@@ -26,7 +26,6 @@ def getName(userid):
         name = False
 
     return name
-
 
 def getDanet():
     firstPart = ["Видимо ", "Точно ", "Я сказала ", "Походу ", 
@@ -82,29 +81,17 @@ def getAnswer(message):
             answer = "%s не очень крутая" % name
             return answer
     
-    request = apiai.ApiAI(APIAITOKEN).text_request()
-    request.lang = "ru"
-    request.session_id = "zhanna"
-    request.query = message.text
-    responseJson = json.loads(request.getresponse().read().decode("utf-8"))
-    answer = responseJson["result"]["fulfillment"]["speech"]
-    
+    answer = getApiAiAnswer(message)
+
     if message.chat.type != "private":
-        try:
-            if message.text.lower().__contains__("жанна") or message.reply_to_message.from_user.id == 1058731629:
-                if answer:
-                    return answer
-                else:
-                    answer = random.choice(["хочу спать", "хочу умереть", "дайте мне поспать", "как же хочется сдохнуть",
-                                    "меня все заебало", "ты не итнересный", "подпишись на @rarezhanna, потом поговорим"])
-                    return answer
-        except:
-            pass
+        if message.reply_to_message.from_user.id == BOT_ID:
+            if answer:
+                return answer
+            else:
+                return IDontUnderstand()
     else:
         if answer:
             return answer
         else:
-            answer = random.choice(["хочу спать", "хочу умереть", "дайте мне поспать", "как же хочется сдохнуть",
-                                    "меня все заебало", "ты не итнересный", "подпишись на @rarezhanna, потом поговорим"])
-            return answer
+            return IDontUnderstand()
     return None
