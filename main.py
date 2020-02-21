@@ -179,22 +179,25 @@ def clear(message):
 # zhanna replyies to text
 @zhanna.message_handler(content_types=["text"])
 def main(message):
-    # checks if user exist in data base 
-    if not userExist(message.from_user.id):
-        newUser(message)
-    # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    try:
+        # checks if user exist in data base 
+        if not userExist(message.from_user.id):
+            newUser(message)
+        # check for chat and user data base
+        if message.chat.type != "private":
+            if not userExist(message.chat.id):
+                newChat(message)
+            userInChat(message)
 
-    # getting answer
-    answer = getAnswer(message)
-    # if answer is not None then zhanna replyies to user
-    if answer != None:
-        zhanna.reply_to(message, "%s" %answer)
-    # console output for administration
-    consoleOutput(message, answer)
+        # getting answer
+        answer = getAnswer(message)
+        # if answer is not None then zhanna replyies to user
+        if answer != None:
+            zhanna.reply_to(message, "%s" %answer)
+        # console output for administration
+        consoleOutput(message, answer)
+    except:
+        pass
 
 # bot pooling 
 zhanna.polling(none_stop=True)
