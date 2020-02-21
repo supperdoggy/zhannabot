@@ -85,8 +85,11 @@ def proebat(message):
                 data["last_time_played_univer"] = int(datetime.datetime.now().day)
                 # saving changes
                 writeData(message.chat.id, data)
-            # getting answer
-            answer = data["user_proeb"]
+                # getting answer
+                answer = data["user_proeb"]
+            else:
+                answer = "Сегодня уже выбрали одного проебщика, пока хватит\n" + data["user_proeb"]
+            
     else:
         # if chat type is private then bot doesnt send answer
         answer = ""

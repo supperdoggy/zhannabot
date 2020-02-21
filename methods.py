@@ -146,7 +146,7 @@ def getAntipara(message):
                     return "У меня меньше двух зарегестрированых юзеров"
             else:
                 # returning previous antipara
-                return data["antipara"]
+                return "Анти пара уже выбрана!\n" + data["antipara"]
         # if chat doesnt exist in then add it
         else:
             # creating base for chat
