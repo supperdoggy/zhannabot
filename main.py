@@ -79,7 +79,8 @@ def proebat(message):
             # you can only play once per day
             if data["last_time_played_univer"] != int(datetime.datetime.now().day):
                 # getting new random user
-                data["user_proeb"] = "Сегодня @%s может спокойно проебать на пары" %random.choice(data["chat_users"]["username"])
+                user = random.choice(data["chat_users"])
+                data["user_proeb"] = "Сегодня @%s может спокойно проебать на пары" %user["username"]
                 # editing last time played
                 data["last_time_played_univer"] = int(datetime.datetime.now().day)
                 # saving changes
