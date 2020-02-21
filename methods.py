@@ -129,7 +129,7 @@ def getAntipara(message):
                     pair = []
                     while len(pair) != 2:
                         # random choice from registered chat users
-                        user = random.choice(data["users"])
+                        user = random.choice(data["chat_users"])
                         # check if there are the same user in pair
                         if user not in pair:
                             # if not then append it into the pair
