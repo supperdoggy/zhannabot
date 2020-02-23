@@ -80,6 +80,7 @@ def consoleOutput(message, answer):
     print("Фамилия у него: %s" %message.from_user.last_name)
     print("Текст сообщения: %s" %message.text)
     print("Я ответила: %s" % answer)
+    print("Время: %s"%datetime.datetime.now())
     print("=" * 10)
     storeAnswerAndQuestion(message, answer)
 
