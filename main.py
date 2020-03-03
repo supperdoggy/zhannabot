@@ -89,7 +89,7 @@ def proebat(message):
                 answer = data["user_proeb"]
             else:
                 answer = "Сегодня уже выбрали одного проебщика, пока хватит\n" + data["user_proeb"]
-            
+                answer = answer.replace("@", "")
     else:
         # if chat type is private then bot doesnt send answer
         answer = ""
@@ -200,4 +200,4 @@ def main(message):
         pass
 
 # bot pooling 
-zhanna.polling(none_stop=True)
+zhanna.polling(none_stop=False, interval=1, timeout=1)
