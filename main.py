@@ -9,7 +9,6 @@ import apiai, json
 
 # TODO: more punk
 # TODO: maybe create minigame for chats like growing, feeding zhanna?
-# TODO: Прогульщик дня
 
 # start command
 zhanna = telebot.TeleBot(TOKEN)
