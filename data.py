@@ -113,3 +113,10 @@ def appendNeverEver(message, answer):
 def isInNeverEver(message, answer):
     data = readData(message.from_user.id)
     return answer in data["never_have_I_ever"]
+
+def userDataBase(message):
+    # check for chat and user data base
+    if message.chat.type != "private":
+        if not userExist(message.chat.id):
+            newChat(message)
+        userInChat(message)

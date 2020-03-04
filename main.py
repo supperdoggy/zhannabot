@@ -15,10 +15,7 @@ zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
 def greetings(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
     # getting greetings message
     answer = start(message.from_user.id)
     # zhanna replies to message
@@ -30,10 +27,7 @@ def greetings(message):
 @zhanna.message_handler(commands=["fortune"])
 def fortune(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
     # getting fortune cookie for user
     answer = getFortuneCookie(message)
     # zhanna answering
@@ -47,10 +41,7 @@ def fortune(message):
 @zhanna.message_handler(commands=["antipara"])
 def antipara(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
     # getting antipara
     answer = getAntipara(message)
     # answer is not None than zhanna answer to the command
@@ -64,10 +55,7 @@ def antipara(message):
 @zhanna.message_handler(commands=["proebat"])
 def proebat(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
     
     # works only in group chats
     if message.chat.type != "private":
@@ -99,10 +87,7 @@ def proebat(message):
 @zhanna.message_handler(commands=["tost"])
 def tost(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
     # getting random tost as an answer for user
     answer = getTostAnswer()
     # replying to user
@@ -129,10 +114,7 @@ def danet(message):
 @zhanna.message_handler(commands=["somilye"])
 def somilye(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
     # getting random drink for user
     answer = getAlcohol(message.from_user.id)
     # replying to user
@@ -144,10 +126,7 @@ def somilye(message):
 @zhanna.message_handler(commands=["neverhaveiever"])
 def neverhaveiever(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
 
     # getting random neverHaveIEver statement
     answer = getNHIEAnswer(message)
@@ -162,10 +141,7 @@ def neverhaveiever(message):
 @zhanna.message_handler(commands=["clear"])
 def clear(message):
     # check for chat and user data base
-    if message.chat.type != "private":
-        if not userExist(message.chat.id):
-            newChat(message)
-        userInChat(message)
+    userDataBase(message)
     # getting data
     data = readData(message.from_user.id)
     # clearing history of never have i ever
@@ -183,10 +159,7 @@ def main(message):
         if not userExist(message.from_user.id):
             newUser(message)
         # check for chat and user data base
-        if message.chat.type != "private":
-            if not userExist(message.chat.id):
-                newChat(message)
-            userInChat(message)
+        userDataBase(message)
 
         # getting answer
         answer = getAnswer(message)
