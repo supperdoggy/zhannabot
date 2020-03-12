@@ -2,7 +2,6 @@ import random
 import json
 import datetime
 import os
-from constants import *
 
 
 def getData():

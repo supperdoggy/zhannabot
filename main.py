@@ -3,14 +3,14 @@ import random
 from data import *
 import os
 import datetime
-from constants import *
+from constants import TOKEN
 from methods import *
 import apiai, json
 
 # TODO: more punk
 # TODO: maybe create minigame for chats like growing, feeding zhanna?
 
-# start command
+# zhanna = bot
 zhanna = telebot.TeleBot(TOKEN)
 @zhanna.message_handler(commands=["start"])
 def greetings(message):
@@ -47,11 +47,12 @@ def antipara(message):
     # answer is not None than zhanna answer to the command
     if answer:
         zhanna.reply_to(message, "%s"%answer)
+    else:
+        zhanna.reply_to(message, "Это работает только в публичных чатах!")
     # console output for administration
     consoleOutput(message, answer)
 
-# TODO: finish it
-# TODO: TEST IT!
+# TODO: refactor it 
 @zhanna.message_handler(commands=["proebat"])
 def proebat(message):
     # check for chat and user data base
@@ -75,11 +76,11 @@ def proebat(message):
                 # getting answer
                 answer = data["user_proeb"]
             else:
-                answer = "Сегодня уже выбрали одного проебщика, пока хватит\n" + data["user_proeb"]
-                answer = answer.replace("@", "")
+                # deleting "@", to avoid tagging user
+                answer = "Сегодня уже выбрали одного проебщика, пока хватит\n" + data["user_proeb"].replace("@", "")
     else:
         # if chat type is private then bot doesnt send answer
-        answer = ""
+        answer = "Это работает только в публичных группах"
     # zhanna replies to user with answer
     zhanna.reply_to(message, "%s"%answer)
     
@@ -127,7 +128,6 @@ def somilye(message):
 def neverhaveiever(message):
     # check for chat and user data base
     userDataBase(message)
-
     # getting random neverHaveIEver statement
     answer = getNHIEAnswer(message)
     # replying to user

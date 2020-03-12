@@ -1,4 +1,4 @@
-from constants import *
+from constants import ZHANNA_ID, TATI_ID, NEMOKS_ID, BOT_ID
 import random
 import os
 from data import *
@@ -54,22 +54,21 @@ def getFortuneCookie(message):
     return answer
 
 def getAlcohol(chatId):
-    if chatId == NEMOKS_ID:
-        return "тільки водку, Макс, тільки водку..."
-
     types = ["Хватит пить!", "наливка в пьяной вишне", "наливка в белом наливе",
                 "сидр", "глинтвейн", "вино", "шампанское", "джин-тоник", "ром-кола",
                 "виски-кола", "рево", "лонгер", "рандомный коктейль",
                 "шоты", "наливки", "самогоночку", "водочку", "все что нальют"]
     
-    if chatId == ZHANNA_ID:
+    if chatId == NEMOKS_ID:
+        types.append("тільки водку, Макс, тільки водку...")
+    elif chatId == ZHANNA_ID:
         types.append("что угодно только не водка жанна нет")
     elif chatId == TATI_ID:
         types.append("что угодно только не водка тати нет")
 
     alcohol = random.choice(types)
 
-    if alcohol != "Хватит пить!":
+    if alcohol != types[0]: #types[0] - "Хватит пить!"
         return "Сегодня мы пьем %s" % alcohol
     else:
         return "Хватит пить!"
@@ -87,6 +86,7 @@ def consoleOutput(message, answer):
 def getTostAnswer():
     return random.choice(getTosts())
 
+# TODO: refactore code!
 def getAnswer(message):
     name = getName(message.from_user.id)
     if name:
@@ -96,7 +96,7 @@ def getAnswer(message):
         elif message.text.lower() == "у меня нету стрелок":
             answer = "%s не очень крутая" % name
             return answer
-    
+
     answer = getApiAiAnswer(message)
 
     if message.chat.type != "private":
@@ -112,7 +112,7 @@ def getAnswer(message):
             return IDontUnderstand()
     return None
 
-# TODO: refactoring this part of code
+# TODO: refactor this part of code
 # calculating answer for antipara command
 def getAntipara(message):
     # works only in public chats
@@ -146,7 +146,7 @@ def getAntipara(message):
                 else:
                     return "У меня меньше двух зарегестрированых юзеров"
             else:
-                # returning previous antipara
+                # returning previous antipara without "@" to avoid tagging people
                 return "Антипара уже выбрана!\n" + data["antipara"].replace("@", "")
         # if chat doesnt exist in then add it
         else:
