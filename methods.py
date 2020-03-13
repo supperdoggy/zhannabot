@@ -4,6 +4,7 @@ import os
 from data import *
 import datetime
 from ml import *
+from access import isBanned
 
 def start(chatId):
     if chatId == ZHANNA_ID:
@@ -44,7 +45,7 @@ def getDanet():
     return answer
 
 def getFortuneCookie(message):
-    d = getLastTimePlayed(message)
+    d = getLastTimePlayed(message) # d - day
     if str(datetime.datetime.now().day) != str(d):
         data = getData()
         answer = random.choice(data)
@@ -86,14 +87,24 @@ def consoleOutput(message, answer):
 def getTostAnswer():
     return random.choice(getTosts())
 
+def sendingAnswer(id):
+    answer = answerCheck(answer)
+    if isBanned(id):
+        if answer.lower().__contains__("@"):
+            return answer.replace("@rarezhanna", "меня")
+    else:
+        return answer
+
 # TODO: refactore code!
 def getAnswer(message):
+    # Firstly it checks the user id is tati`s or zhanna`s id
     name = getName(message.from_user.id)
     if name:
-        if message.text.lower() == "у меня есть стрелки":
+        # and then it checs if 
+        if message.text.lower().__contains__("у меня есть стрелки"):
             answer = "%s крутая!" %name
             return answer
-        elif message.text.lower() == "у меня нету стрелок":
+        elif message.text.lower().__contains__("у меня нету стрелок"):
             answer = "%s не очень крутая" % name
             return answer
 
@@ -101,15 +112,9 @@ def getAnswer(message):
 
     if message.chat.type != "private":
         if message.reply_to_message.from_user.id == BOT_ID:
-            if answer:
-                return answer
-            else:
-                return IDontUnderstand()
+            return sendingAnswer(message.from_user.id)
     else:
-        if answer:
-            return answer
-        else:
-            return IDontUnderstand()
+        return sendingAnswer(message.from_user.id)
     return None
 
 # TODO: refactor this part of code

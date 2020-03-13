@@ -15,3 +15,7 @@ def IDontUnderstand():
     possibleAnswers = ["хочу спать", "хочу умереть", "дайте мне поспать", "как же хочется сдохнуть",
                     "меня все заебало", "ты не итнересный", "подпишись на @rarezhanna, потом поговорим"]
     return random.choice(possibleAnswers)
+
+def answerCheck(answer):
+    answer = answer if answer else IDontUnderstand()
+    return answer
