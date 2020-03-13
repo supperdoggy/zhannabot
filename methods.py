@@ -78,6 +78,7 @@ def consoleOutput(message, answer):
     print("Мне написал человек с юзернеймом: %s" % message.from_user.username)
     print("Имя у него: %s" %message.from_user.first_name)
     print("Фамилия у него: %s" %message.from_user.last_name)
+    print("Юзер забанен: %s" % isBanned(message.from_user.id))
     print("Текст сообщения: %s" %message.text)
     print("Я ответила: %s" % answer)
     print("Время: %s"%datetime.datetime.now())
@@ -87,13 +88,12 @@ def consoleOutput(message, answer):
 def getTostAnswer():
     return random.choice(getTosts())
 
-def sendingAnswer(id):
+def sendingAnswer(id, answer):
     answer = answerCheck(answer)
     if isBanned(id):
         if answer.lower().__contains__("@"):
             return answer.replace("@rarezhanna", "меня")
-    else:
-        return answer
+    return answer
 
 # TODO: refactore code!
 def getAnswer(message):
@@ -112,9 +112,9 @@ def getAnswer(message):
 
     if message.chat.type != "private":
         if message.reply_to_message.from_user.id == BOT_ID:
-            return sendingAnswer(message.from_user.id)
+            return sendingAnswer(message.from_user.id, answer)
     else:
-        return sendingAnswer(message.from_user.id)
+        return sendingAnswer(message.from_user.id, answer)
     return None
 
 # TODO: refactor this part of code

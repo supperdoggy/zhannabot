@@ -17,5 +17,4 @@ def IDontUnderstand():
     return random.choice(possibleAnswers)
 
 def answerCheck(answer):
-    answer = answer if answer else IDontUnderstand()
-    return answer
+    return answer if answer else IDontUnderstand()
