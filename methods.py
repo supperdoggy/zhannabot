@@ -231,6 +231,7 @@ def bubble(array, array2):
                 array2[j] = array2[j+1]
                 array2[j+1] = buff1
 
+# TODO: holy fuck just refactor this pizdec
 def getTopFlowers(message):
     try:
         if message.chat.type != "private":
@@ -256,7 +257,7 @@ def getTopFlowers(message):
             i = 0
             answer = ""
             while i<len(sizes):
-                answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(sizes[i]) + " цветочковых единиц\n"
+                answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(round(sizes[i]/100)) +" цветочков и " + str(sizes[i] - (round(sizes[i]/100) * 100)) + " цветочковых единиц\n"
                 i+=1
             
             return answer
