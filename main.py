@@ -151,6 +151,39 @@ def clear(message):
     # replying to user
     zhanna.reply_to(message, "Я удалила историю игры")
 
+@zhanna.message_handler(commands=["flower"])
+def growFlower(message):
+    # check for chat and user data base
+    userDataBase(message)
+    # getting answer
+    answer = flower(message)
+    # zhanna replies
+    zhanna.reply_to(message, "%s"%answer)
+    # consnole output for administration
+    consoleOutput(message, answer)
+
+@zhanna.message_handler(commands=["myflowers"])
+def myFlowers(message):
+    # check for chat and user data base
+    userDataBase(message)
+    # getting answer
+    answer = getFlowers(message)
+    # zhanna replies
+    zhanna.reply_to(message, "%s"%answer)
+    # console output for administration
+    consoleOutput(message, answer)
+
+@zhanna.message_handler(commands=["flowertop"])
+def topFlowers(message):
+    # check for chat and user data base
+    userDataBase(message)    
+    # getting answer
+    answer = getTopFlowers(message)
+    # zhanna replies to user
+    zhanna.reply_to(message, "%s"%answer)
+    # console output for administration
+    consoleOutput(message, answer)
+
 # zhanna replyies to text
 @zhanna.message_handler(content_types=["text"])
 def main(message):

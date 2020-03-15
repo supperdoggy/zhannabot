@@ -3,6 +3,71 @@ import json
 import datetime
 import os
 
+# flowers
+
+def flowerChat(message):
+    if userFlowerDataExist(message.chat.id):
+        if userInFlowerChat(message.from_user.id, message.chat.id):
+            pass
+        else:
+            appendUserInFlowerChat(message.from_user.id, message.chat.id)
+    else:
+        newFlowerChat(message)
+        flowerChat(message)
+
+def userFlowerDataExist(id):
+    return True if os.path.exists("flower_data/%s.json"%id) else False
+
+def userInFlowerChat(userId, chatId):
+    return True if userId in reatFlowerData(chatId)["chat_users"] else False
+
+def appendUserInFlowerChat(userId, chatId):
+    data = reatFlowerData(chatId)
+    data["chat_users"].append(userId)
+    writeFlowerData(chatId, data)
+
+def getFlowerData(message):
+    if userFlowerDataExist(message.from_user.id):
+        if message.chat.type != "private":
+            flowerChat(message)
+        return reatFlowerData(message.from_user.id)
+    else:
+        newFlower(message)
+        return reatFlowerData(message.from_user.id)
+
+def newFlowerChat(message):
+    data = {
+        "chat_username": message.chat.username,
+        "chat_first_name": message.chat.first_name,
+        "chat_id": message.chat.id,
+        "chat_users": []
+    }
+    writeFlowerData(message.chat.id, data)
+
+def newFlower(message):
+    data = {
+       "id": message.from_user.id,
+        "username": message.from_user.username,
+        "first_name": message.from_user.first_name,
+        "last_name": message.from_user.last_name,
+        "last_time_played": (-1, -1, -1, -1), # year, month, day, hour
+        "current_flower": 0,
+        "total_amount_of_flowers": 0
+    }
+    writeFlowerData(message.from_user.id, data)
+
+def writeFlowerData(id, data):
+    with open("flower_data/%s.json"%id, "w+") as outfile:
+        json.dump(data, outfile)
+    outfile.close()
+
+def reatFlowerData(id):
+    with open('flower_data/%s.json' %id) as outfile:
+        data = json.load(outfile)
+    outfile.close()
+    return data
+
+# flowers
 
 def getData():
     f = open("fortuneCookies.json", "r")

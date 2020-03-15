@@ -1,4 +1,4 @@
-from constants import ZHANNA_ID, TATI_ID, NEMOKS_ID, BOT_ID
+from constants import ZHANNA_ID, TATI_ID, NEMOKS_ID, BOT_ID, CHANCE_OF_DYING_FLOWER
 import random
 import os
 from data import *
@@ -162,3 +162,105 @@ def getAntipara(message):
     else:
         # if chat is public then returning None
         return None
+
+# flower
+
+def canGrowFlower(data):
+    date = datetime.datetime.now()
+
+    # 0 - year
+    # 1 - month
+    # 2 - day
+    # 3 - hour
+    if data["last_time_played"][0] < date.year:
+        return True
+    elif data["last_time_played"][1] < date.month:
+        return True
+    elif data["last_time_played"][2] < date.day:
+        return True
+    elif data["last_time_played"][3] + 6 <= date.hour:
+        return True
+    return False
+
+def flowerDies():
+    return True if random.randint(0, 100) <= CHANCE_OF_DYING_FLOWER else False
+
+def editLastTimePlayedFlower(data):
+    date = datetime.datetime.now()
+    data["last_time_played"][0] = date.year
+    data["last_time_played"][1] = date.month
+    data["last_time_played"][2] = date.day
+    data["last_time_played"][3] = date.hour
+    return data
+
+def flower(message):
+    data = getFlowerData(message)
+    if canGrowFlower(data):
+        if flowerDies():
+            data["current_flower"] = 0
+            answer = "йой, кажется твой цветочек умер, обнуляем результаты"
+        else:
+            data["current_flower"] += random.randint(0, 10)
+            if data["current_flower"] >= 100:
+                data["total_amount_of_flowers"] += 1
+                data["current_flower"] = 0
+                answer = "Твой цветочек уже вырос! у тебя уже %s цветоков"%data["total_amount_of_flowers"]  
+            else:
+                answer = "У твоего цветочка уже %s цветочных баллов" %data["current_flower"] 
+    
+        data = editLastTimePlayedFlower(data)
+        # saving changes
+        writeFlowerData(message.from_user.id, data)
+
+        return answer
+    else:
+        return "цветочки не растут так часто, их можно растить раз в 6 часов"
+
+def getFlowers(message):
+    data = getFlowerData(message)
+    return "У тебя уже " + str(data["total_amount_of_flowers"]) + " вырощенных цветочков! А у цветочка, который ты выращиваешь сейчас - " + str(data["current_flower"]) + " цветочковых баллов."
+
+def bubble(array, array2):
+    for i in range(len(array)-1):
+        for j in range(len(array)-i-1):
+            if array[j] < array[j+1]:
+                buff = array[j]
+                buff1 = array2[j]
+                array[j] = array[j+1]
+                array[j+1] = buff
+                array2[j] = array2[j+1]
+                array2[j+1] = buff1
+
+def getTopFlowers(message):
+    try:
+        if message.chat.type != "private":
+            data = getFlowerData(message)
+            chatData = reatFlowerData(message.chat.id)
+
+            data_list = []
+            for n in chatData["chat_users"]:
+                if userFlowerDataExist(n):
+                    data = reatFlowerData(n)
+                    data_list.append(data)
+
+            usernames = []
+            sizes = []
+            i = 0
+            while i < len(data_list):
+                usernames.append(data_list[i]["username"])
+                sizes.append(data_list[i]["total_amount_of_flowers"] * 100  + data_list[i]["current_flower"])
+                i+=1
+
+            bubble(sizes, usernames)
+
+            i = 0
+            answer = ""
+            while i<len(sizes):
+                answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(sizes[i]) + " цветочковых единиц\n"
+                i+=1
+            
+            return answer
+        else:
+            return "Это не паблик чат"
+    except:
+        return "Лол я умерла"
