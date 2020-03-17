@@ -200,7 +200,7 @@ def flower(message):
             data["current_flower"] = 0
             answer = "йой, кажется твой цветочек умер, обнуляем результаты"
         else:
-            data["current_flower"] += random.randint(0, 10)
+            data["current_flower"] += random.randint(1, 20)
             if data["current_flower"] >= 100:
                 data["total_amount_of_flowers"] += 1
                 data["current_flower"] = 0
@@ -257,7 +257,11 @@ def getTopFlowers(message):
             i = 0
             answer = ""
             while i<len(sizes):
-                answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(round(sizes[i]/100)) +" цветочков и " + str(sizes[i] - (round(sizes[i]/100) * 100)) + " цветочковых единиц\n"
+                for n in data_list:
+                    if n["username"] == usernames[i]:
+                        flowers = n["total_amount_of_flowers"]
+                        current = n["current_flower"]
+                answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" цветочков и " + str(current) + " цветочковых единиц\n"
                 i+=1
             
             return answer

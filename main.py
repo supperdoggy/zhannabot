@@ -8,7 +8,6 @@ from methods import *
 import apiai, json
 
 # TODO: more punk
-# TODO: maybe create minigame for chats like growing, feeding zhanna?
 
 # zhanna = bot
 zhanna = telebot.TeleBot(TOKEN)
