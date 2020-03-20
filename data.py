@@ -72,16 +72,19 @@ def reatFlowerData(id):
 def getData():
     f = open("fortuneCookies.json", "r")
     data = json.load(f)
+    f.close()
     return data
 
 def getTosts():
     f = open("Tosts.json", "r")
     data = json.load(f)
+    f.close()
     return data
 
 def getNeverHaveIEver():
     f = open("neverever.json", "r")
     data = json.load(f)
+    f.close()
     return data
 
 def userInChat(message):

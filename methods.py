@@ -178,7 +178,7 @@ def canGrowFlower(data):
         return True
     elif data["last_time_played"][2] < date.day:
         return True
-    elif data["last_time_played"][3] + 6 <= date.hour:
+    elif data["last_time_played"][3] + 4 <= date.hour:
         return True
     return False
 
@@ -214,7 +214,7 @@ def flower(message):
 
         return answer
     else:
-        return "цветочки не растут так часто, их можно растить раз в 6 часов"
+        return "цветочки не растут так часто, их можно растить раз в 6 часов, последний раз ты растил в %s часов(по времени хостинга)" %data["last_time_played"][3]
 
 def getFlowers(message):
     data = getFlowerData(message)

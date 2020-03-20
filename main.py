@@ -67,7 +67,7 @@ def proebat(message):
             if data["last_time_played_univer"] != int(datetime.datetime.now().day):
                 # getting new random user
                 user = random.choice(data["chat_users"])
-                data["user_proeb"] = "Сегодня @%s может спокойно проебать на пары" %user["username"]
+                data["user_proeb"] = "Сегодня @%s сто проц не умрет, наслаждайся этим днем!" %user["username"]
                 # editing last time played
                 data["last_time_played_univer"] = int(datetime.datetime.now().day)
                 # saving changes
@@ -76,12 +76,14 @@ def proebat(message):
                 answer = data["user_proeb"]
             else:
                 # deleting "@", to avoid tagging user
-                answer = "Сегодня уже выбрали одного проебщика, пока хватит\n" + data["user_proeb"].replace("@", "")
+                answer = "Сегодня уже выбрали одного счасливчика, пока хватит\n" + data["user_proeb"].replace("@", "")
     else:
         # if chat type is private then bot doesnt send answer
         answer = "Это работает только в публичных группах"
     # zhanna replies to user with answer
     zhanna.reply_to(message, "%s"%answer)
+    # console output for administration
+    consoleOutput(message, answer)
     
 # command for getting cheer tost
 @zhanna.message_handler(commands=["tost"])
