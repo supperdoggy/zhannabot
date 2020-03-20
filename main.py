@@ -53,33 +53,10 @@ def antipara(message):
 
 # TODO: refactor it 
 @zhanna.message_handler(commands=["corona"])
-def proebat(message):
+def corona(message):
     # check for chat and user data base
     userDataBase(message)
-    
-    # works only in group chats
-    if message.chat.type != "private":
-        # checks if chat exist
-        if userExist(message.chat.id):
-            # getting data
-            data = readData(message.chat.id)
-            # you can only play once per day
-            if data["last_time_played_univer"] != int(datetime.datetime.now().day):
-                # getting new random user
-                user = random.choice(data["chat_users"])
-                data["user_proeb"] = "Сегодня @%s сто проц не умрет, наслаждайся этим днем!" %user["username"]
-                # editing last time played
-                data["last_time_played_univer"] = int(datetime.datetime.now().day)
-                # saving changes
-                writeData(message.chat.id, data)
-                # getting answer
-                answer = data["user_proeb"]
-            else:
-                # deleting "@", to avoid tagging user
-                answer = "Сегодня уже выбрали одного счасливчика, пока хватит\n" + data["user_proeb"].replace("@", "")
-    else:
-        # if chat type is private then bot doesnt send answer
-        answer = "Это работает только в публичных группах"
+    answer = getCorona(message)
     # zhanna replies to user with answer
     zhanna.reply_to(message, "%s"%answer)
     # console output for administration
