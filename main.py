@@ -52,7 +52,7 @@ def antipara(message):
     consoleOutput(message, answer)
 
 # TODO: refactor it 
-@zhanna.message_handler(commands=["proebat"])
+@zhanna.message_handler(commands=["corona"])
 def proebat(message):
     # check for chat and user data base
     userDataBase(message)

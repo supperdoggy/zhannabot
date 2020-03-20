@@ -197,6 +197,7 @@ def flower(message):
     data = getFlowerData(message)
     if canGrowFlower(data):
         if flowerDies():
+            writeToGraveYard(data["username"], data["first_name"], data["current_flower"])
             data["current_flower"] = 0
             answer = "йой, кажется твой цветочек умер, обнуляем результаты"
         else:
@@ -204,7 +205,7 @@ def flower(message):
             if data["current_flower"] >= 100:
                 data["total_amount_of_flowers"] += 1
                 data["current_flower"] = 0
-                answer = "Твой цветочек уже вырос! у тебя уже %s цветоков"%data["total_amount_of_flowers"]  
+                answer = "Твой цветочек уже вырос! у тебя уже %s цветочков"%data["total_amount_of_flowers"]  
             else:
                 answer = "У твоего цветочка уже %s цветочных баллов" %data["current_flower"] 
     

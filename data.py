@@ -5,6 +5,18 @@ import os
 
 # flowers
 
+def writeToGraveYard(username, first_name, size):
+    try:
+        f = open("grave_yard/lol.txt", "a+")
+        lol = "="*10 + "\n" + "Время смерти: " + str(datetime.datetime.now()) + "\n" + "Имя пострадавшего: " + str(first_name) + "\n" + "Юзернейм пострадавшего: " + str(username) + "\n" + "Размер цветка: " + str(size) + "\n"
+        f.write(lol)
+        f.close()
+    except:
+        f = open("grave_yard/lol.txt", "w+")
+        lol = "="*10 + "\n" + "Время смерти: " + str(datetime.datetime.now()) + "\n" + "Имя пострадавшего: " + str(first_name) + "\n" + "Юзернейм пострадавшего: " + str(username) + "\n" + "Размер цветка: " + str(size) + "\n"
+        f.write(lol)
+        f.close()
+
 def flowerChat(message):
     if userFlowerDataExist(message.chat.id):
         if userInFlowerChat(message.from_user.id, message.chat.id):
