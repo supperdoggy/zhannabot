@@ -234,8 +234,19 @@ def flowerGrows(currentSize, userId):
         amountOfMessages = len(readData(userId)["questions"])
     except:
         amountOfMessages = 0
-    return int(currentSize) + random.randint(LOWER_RANDOM_FLOWER_NUMBER, HIGHER_RANDOM_FLOWER_NUMBER) + (int(amountOfMessages *  MESSAGE_MULTIPLYER))
+    extra = int(amountOfMessages *  MESSAGE_MULTIPLYER)
+    extra = extra if extra <=20 else 20
+    currentSize += random.randint(LOWER_RANDOM_FLOWER_NUMBER, HIGHER_RANDOM_FLOWER_NUMBER) + extra
+    return int(currentSize)
 
+def getExtra(userId):
+    try:
+        amountOfMessages = len(readData(userId)["questions"])
+    except:
+        amountOfMessages = 0
+    extra = int(amountOfMessages *  MESSAGE_MULTIPLYER)
+    return extra if extra<=20 else 20
+        
 
 def flower(message):
     data = getFlowerData(message)
@@ -263,7 +274,7 @@ def flower(message):
 
 def getFlowers(message):
     data = getFlowerData(message)
-    return "У тебя уже " + str(data["total_amount_of_flowers"]) + " вырощенных цветочков! А у цветочка, который ты выращиваешь сейчас " + str(data["current_flower"]) + " цветочковых баллов."
+    return "У тебя уже " + str(data["total_amount_of_flowers"]) + " вырощенных цветочков! А у цветочка, который ты выращиваешь сейчас " + str(data["current_flower"]) + f" цветочковых баллов.\n\nДополнительный прирост: {getExtra(data['id'])}"
 
 def bubble(array, array2):
     for i in range(len(array)-1):
