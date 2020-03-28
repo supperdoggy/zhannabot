@@ -214,7 +214,7 @@ def canGrowFlower(data):
         return True
     elif data["last_time_played"][2] < date.day:
         return True
-    elif data["last_time_played"][3] + 4 <= date.hour:
+    elif data["last_time_played"][3] + GROWING_TIME_LIMIT <= date.hour:
         return True
     return False
 
@@ -246,7 +246,16 @@ def getExtra(userId):
         amountOfMessages = 0
     extra = int(amountOfMessages *  MESSAGE_MULTIPLYER)
     return extra if extra<=20 else 20
-        
+
+def whenCanGrowAgain(time):
+    i = 0
+    while i < GROWING_TIME_LIMIT:
+        if time<=24:
+            time+=1
+        else:
+            time = 1
+        i+=1
+    return time
 
 def flower(message):
     data = getFlowerData(message)
@@ -270,7 +279,7 @@ def flower(message):
 
         return answer
     else:
-        return "цветочки не растут так часто, их можно растить раз в 6 часов, последний раз ты растил в %s часов(по времени хостинга)" %data["last_time_played"][3]
+        return "цветочки не растут так часто, их можно растить раз в 6 часов, попробуй еще раз в %s часов" %whenCanGrowAgain(data["last_time_played"][3])
 
 def getFlowers(message):
     data = getFlowerData(message)
