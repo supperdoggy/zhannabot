@@ -234,8 +234,8 @@ def flowerGrows(currentSize, userId):
         amountOfMessages = len(readData(userId)["questions"])
     except:
         amountOfMessages = 0
-        print(amountOfMessages *  MESSAGE_MULTIPLYER)
-    return currentSize + (amountOfMessages * MESSAGE_MULTIPLYER)
+        extra: int = amountOfMessages *  MESSAGE_MULTIPLYER
+    return currentSize + (extra)
 
 
 def flower(message):
