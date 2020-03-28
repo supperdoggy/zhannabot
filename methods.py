@@ -9,7 +9,8 @@ from access import isBanned
 
 def zhannaReplies(zhanna, message, answer):
     try:
-        zhanna.reply_to(message, "%s"%answer)
+        if answer != None:
+            zhanna.reply_to(message, "%s"%answer)
     except:
         pass
 
