@@ -18,7 +18,7 @@ def greetings(message):
     # getting greetings message
     answer = start(message.from_user.id)
     # zhanna replies to message
-    zhanna.reply_to(message, "%s" %answer)
+    zhannaReplies(zhanna, message, answer)
     # console output for administration
     consoleOutput(message, answer)
 
@@ -30,7 +30,7 @@ def fortune(message):
     # getting fortune cookie for user
     answer = getFortuneCookie(message)
     # zhanna answering
-    zhanna.reply_to(message, "%s" %answer)
+    zhannaReplies(zhanna, message, answer)
     # edditing the last time played
     editLastTimePlayed(message)
     # console output for administration
@@ -58,7 +58,7 @@ def corona(message):
     userDataBase(message)
     answer = getCorona(message)
     # zhanna replies to user with answer
-    zhanna.reply_to(message, "%s"%answer)
+    zhannaReplies(zhanna, message, answer)
     # console output for administration
     consoleOutput(message, answer)
     
@@ -70,7 +70,7 @@ def tost(message):
     # getting random tost as an answer for user
     answer = getTostAnswer()
     # replying to user
-    zhanna.send_message(message.chat.id, "%s" %answer)
+    zhannaReplies(zhanna, message, answer)
     # console output for administration
     consoleOutput(message, answer)
 
@@ -85,7 +85,7 @@ def danet(message):
     # getting answer
     answer = getDanet()
     # replying to user
-    zhanna.reply_to(message, "%s" % answer)
+    zhannaReplies(zhanna, message, answer)
     # console output for administration
     consoleOutput(message, answer)
 
@@ -97,7 +97,7 @@ def somilye(message):
     # getting random drink for user
     answer = getAlcohol(message.from_user.id)
     # replying to user
-    zhanna.reply_to(message, "%s" % answer)
+    zhannaReplies(zhanna, message, answer)
     # console output for administration
     consoleOutput(message, answer)
 
@@ -109,7 +109,7 @@ def neverhaveiever(message):
     # getting random neverHaveIEver statement
     answer = getNHIEAnswer(message)
     # replying to user
-    zhanna.reply_to(message, "%s" %answer)
+    zhannaReplies(zhanna, message, answer)
     # appending new statement into the history
     appendNeverEver(message, answer)
     # console output for administration
@@ -136,7 +136,7 @@ def growFlower(message):
     # getting answer
     answer = flower(message)
     # zhanna replies
-    zhanna.reply_to(message, "%s"%answer)
+    zhannaReplies(zhanna, message, answer)
     # consnole output for administration
     consoleOutput(message, answer)
 
@@ -147,7 +147,7 @@ def myFlowers(message):
     # getting answer
     answer = getFlowers(message)
     # zhanna replies
-    zhanna.reply_to(message, "%s"%answer)
+    zhannaReplies(zhanna, message, answer)
     # console output for administration
     consoleOutput(message, answer)
 
@@ -158,7 +158,7 @@ def topFlowers(message):
     # getting answer
     answer = getTopFlowers(message)
     # zhanna replies to user
-    zhanna.reply_to(message, "%s"%answer)
+    zhannaReplies(zhanna, message, answer)
     # console output for administration
     consoleOutput(message, answer)
 
@@ -166,17 +166,12 @@ def topFlowers(message):
 @zhanna.message_handler(content_types=["text"])
 def main(message):
     try:
-        # checks if user exist in data base 
-        if not userExist(message.from_user.id):
-            newUser(message)
         # check for chat and user data base
         userDataBase(message)
-
         # getting answer
         answer = getAnswer(message)
-        # if answer is not None then zhanna replyies to user
-        if answer != None:
-            zhanna.reply_to(message, "%s" %answer)
+        # zhanna replies to user
+        zhannaReplies(zhanna, message, answer)
         # console output for administration
         consoleOutput(message, answer)
     except:

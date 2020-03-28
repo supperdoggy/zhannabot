@@ -1,10 +1,17 @@
-from constants import ZHANNA_ID, TATI_ID, NEMOKS_ID, BOT_ID, CHANCE_OF_DYING_FLOWER
+from constants import ZHANNA_ID, TATI_ID, NEMOKS_ID, BOT_ID
+from cfg import *
 import random
 import os
 from data import *
 import datetime
 from ml import *
 from access import isBanned
+
+def zhannaReplies(zhanna, message, answer):
+    try:
+        zhanna.reply_to(message, "%s"%answer)
+    except:
+        pass
 
 def start(chatId):
     if chatId == ZHANNA_ID:
@@ -83,7 +90,10 @@ def consoleOutput(message, answer):
     print("Я ответила: %s" % answer)
     print("Время: %s"%datetime.datetime.now())
     print("=" * 10)
-    storeAnswerAndQuestion(message, answer)
+    try:
+        storeAnswerAndQuestion(message, answer)
+    except:
+        pass
 
 def getTostAnswer():
     return random.choice(getTosts())
@@ -218,6 +228,15 @@ def editLastTimePlayedFlower(data):
     data["last_time_played"][3] = date.hour
     return data
 
+def flowerGrows(currentSize, userId):
+    try:
+        amountOfMessages = len(readData(userId)["questions"])
+    except:
+        amountOfMessages = 0
+        print(amountOfMessages *  MESSAGE_MULTIPLYER)
+    return currentSize + (amountOfMessages * MESSAGE_MULTIPLYER)
+
+
 def flower(message):
     data = getFlowerData(message)
     if canGrowFlower(data):
@@ -226,7 +245,7 @@ def flower(message):
             data["current_flower"] = 0
             answer = "йой, кажется твой цветочек умер, обнуляем результаты"
         else:
-            data["current_flower"] += random.randint(1, 20)
+            data["current_flower"] = flowerGrows(data["current_flower"], data["id"])
             if data["current_flower"] >= 100:
                 data["total_amount_of_flowers"] += 1
                 data["current_flower"] = 0
@@ -244,7 +263,7 @@ def flower(message):
 
 def getFlowers(message):
     data = getFlowerData(message)
-    return "У тебя уже " + str(data["total_amount_of_flowers"]) + " вырощенных цветочков! А у цветочка, который ты выращиваешь сейчас - " + str(data["current_flower"]) + " цветочковых баллов."
+    return "У тебя уже " + str(data["total_amount_of_flowers"]) + " вырощенных цветочков! А у цветочка, который ты выращиваешь сейчас " + str(data["current_flower"]) + " цветочковых баллов."
 
 def bubble(array, array2):
     for i in range(len(array)-1):
