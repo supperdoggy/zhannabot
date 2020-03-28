@@ -234,8 +234,7 @@ def flowerGrows(currentSize, userId):
         amountOfMessages = len(readData(userId)["questions"])
     except:
         amountOfMessages = 0
-        extra: int = amountOfMessages *  MESSAGE_MULTIPLYER
-    return currentSize + (extra)
+    return int(currentSize) + random.randint(LOWER_RANDOM_FLOWER_NUMBER, HIGHER_RANDOM_FLOWER_NUMBER) + (int(amountOfMessages *  MESSAGE_MULTIPLYER))
 
 
 def flower(message):
