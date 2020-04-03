@@ -162,6 +162,17 @@ def topFlowers(message):
     # console output for administration
     consoleOutput(message, answer)
 
+@zhanna.message_handler(commands=["giveoneflower"])
+def giveOneFLower(message):
+    # check for chat and user data base
+    userDataBase(message) 
+    # getting answer
+    answer = sendFlower(message)
+    # zhanna replies to user
+    zhannaReplies(zhanna, message, answer)
+    # console output for administration
+    consoleOutput(message, answer)
+
 # zhanna replyies to text
 @zhanna.message_handler(content_types=["text"])
 def main(message):

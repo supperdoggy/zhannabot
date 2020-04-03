@@ -1,7 +1,8 @@
 import json
+from constants import FULL_PATH
 
 def structuringData():
-    with open("preds.txt") as f:
+    with open(FULL_PATH + "preds.txt") as f:
         lineList = f.readlines()
     f.close()
 
@@ -21,7 +22,7 @@ def structuringData():
     return lineList
 
 def structuringTosts():
-    with open("tosts.txt") as f:
+    with open(FULL_PATH + "tosts.txt") as f:
         lineList = f.readlines()
     f.close()
     i = 0
@@ -59,11 +60,11 @@ def structuringTosts():
         i+=1
 
     print(len(lineList))
-    f = open("Tosts.json", "w+")
+    f = open(FULL_PATH + "Tosts.json", "w+")
     json.dump(lineList, f)
 
 def structNeverEver():
-    with open("neverever.txt") as f:
+    with open(FULL_PATH + "neverever.txt") as f:
         lineList = f.readlines()
     f.close()
 
@@ -80,7 +81,7 @@ def structNeverEver():
                 lineList[i] = lineList[i].replace("%s" %trash, "")
         i+=1
 
-    with open("neverever2.txt") as f:
+    with open(FULL_PATH + "neverever2.txt") as f:
         lineList2 = f.readlines()
     f.close()
     for n in lineList2:
@@ -91,7 +92,7 @@ def structNeverEver():
     json.dump(lineList, f)
 
 def structDate():
-    with open("date.txt") as f:
+    with open(FULL_PATH + "date.txt") as f:
         string = f.read()
     f.close()
     i = 0

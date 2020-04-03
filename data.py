@@ -2,20 +2,27 @@ import random
 import json
 import datetime
 import os
+from constants import FULL_PATH
 
 # flowers
 
 def writeToGraveYard(username, first_name, size):
     try:
-        f = open("grave_yard/lol.txt", "a+")
+        f = open(FULL_PATH + "grave_yard/lol.txt", "a+")
         lol = "="*10 + "\n" + "Время смерти: " + str(datetime.datetime.now()) + "\n" + "Имя пострадавшего: " + str(first_name) + "\n" + "Юзернейм пострадавшего: " + str(username) + "\n" + "Размер цветка: " + str(size) + "\n"
         f.write(lol)
         f.close()
     except:
-        f = open("grave_yard/lol.txt", "w+")
+        f = open(FULL_PATH + "grave_yard/lol.txt", "w+")
         lol = "="*10 + "\n" + "Время смерти: " + str(datetime.datetime.now()) + "\n" + "Имя пострадавшего: " + str(first_name) + "\n" + "Юзернейм пострадавшего: " + str(username) + "\n" + "Размер цветка: " + str(size) + "\n"
         f.write(lol)
         f.close()
+
+def getFlowerDataWithCheck(id):
+    if userFlowerDataExist(id):
+        return reatFlowerData(id)
+    else:
+        return None
 
 def flowerChat(message):
     if userFlowerDataExist(message.chat.id):
@@ -28,7 +35,7 @@ def flowerChat(message):
         flowerChat(message)
 
 def userFlowerDataExist(id):
-    return True if os.path.exists("flower_data/%s.json"%id) else False
+    return True if os.path.exists(FULL_PATH + "flower_data/%s.json"%id) else False
 
 def userInFlowerChat(userId, chatId):
     return True if userId in reatFlowerData(chatId)["chat_users"] else False
@@ -69,12 +76,12 @@ def newFlower(message):
     writeFlowerData(message.from_user.id, data)
 
 def writeFlowerData(id, data):
-    with open("flower_data/%s.json"%id, "w+") as outfile:
+    with open(FULL_PATH + "flower_data/%s.json"%id, "w+") as outfile:
         json.dump(data, outfile)
     outfile.close()
 
 def reatFlowerData(id):
-    with open('flower_data/%s.json' %id) as outfile:
+    with open(FULL_PATH + 'flower_data/%s.json' %id) as outfile:
         data = json.load(outfile)
     outfile.close()
     return data
@@ -82,19 +89,19 @@ def reatFlowerData(id):
 # flowers
 
 def getData():
-    f = open("fortuneCookies.json", "r")
+    f = open(FULL_PATH + "fortuneCookies.json", "r")
     data = json.load(f)
     f.close()
     return data
 
 def getTosts():
-    f = open("Tosts.json", "r")
+    f = open(FULL_PATH + "Tosts.json", "r")
     data = json.load(f)
     f.close()
     return data
 
 def getNeverHaveIEver():
-    f = open("neverever.json", "r")
+    f = open(FULL_PATH + "neverever.json", "r")
     data = json.load(f)
     f.close()
     return data
@@ -117,7 +124,7 @@ def userInChat(message):
         userInChat(message)
 
 def userExist(id):
-    return os.path.exists("data/%s.json"%id)
+    return os.path.exists(FULL_PATH + "data/%s.json"%id)
 
 def newChat(message):
     if message.chat.type != "private":
@@ -174,13 +181,13 @@ def storeAnswerAndQuestion(message, answer):
         storeAnswerAndQuestion(message, answer)
 
 def readData(id):
-    with open('data/%s.json' %id) as outfile:
+    with open(FULL_PATH + 'data/%s.json' %id) as outfile:
         data = json.load(outfile)
     outfile.close()
     return data
 
 def writeData(id, data):
-    with open('data/%s.json' %id, 'w+') as outfile:
+    with open(FULL_PATH + 'data/%s.json' %id, 'w+') as outfile:
         json.dump(data, outfile)
     outfile.close()
 

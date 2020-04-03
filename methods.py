@@ -248,13 +248,11 @@ def getExtra(userId):
     return extra if extra<=20 else 20
 
 def whenCanGrowAgain(time):
-    i = 0
-    while i < GROWING_TIME_LIMIT:
-        if time<=24:
+    for _ in range(GROWING_TIME_LIMIT+2+1+3):# +3 cos of time difference
+        if time<24:
             time+=1
         else:
-            time = 1
-        i+=1
+            time=0
     return time
 
 def flower(message):
@@ -279,7 +277,7 @@ def flower(message):
 
         return answer
     else:
-        return "цветочки не растут так часто, их можно растить раз в 6 часов, попробуй еще раз в %s часов" %whenCanGrowAgain(data["last_time_played"][3])
+        return "цветочки не растут так часто, их можно растить раз в 6 часов, попробуй еще раз в %s:00" %whenCanGrowAgain(data["last_time_played"][3])
 
 def getFlowers(message):
     data = getFlowerData(message)
@@ -298,39 +296,78 @@ def bubble(array, array2):
 
 # TODO: holy fuck just refactor this pizdec
 def getTopFlowers(message):
+    if message.chat.type == "private":
+        return "Это не паблик чат"
+    
     try:
-        if message.chat.type != "private":
-            data = getFlowerData(message)
-            chatData = reatFlowerData(message.chat.id)
+        data = getFlowerData(message)
+        chatData = reatFlowerData(message.chat.id)
 
-            data_list = []
-            for n in chatData["chat_users"]:
-                if userFlowerDataExist(n):
-                    data = reatFlowerData(n)
-                    data_list.append(data)
+        data_list = []
+        for n in chatData["chat_users"]:
+            if userFlowerDataExist(n):
+                data = reatFlowerData(n)
+                data_list.append(data)
 
-            usernames = []
-            sizes = []
-            i = 0
-            while i < len(data_list):
-                usernames.append(data_list[i]["username"])
-                sizes.append(data_list[i]["total_amount_of_flowers"] * 100  + data_list[i]["current_flower"])
-                i+=1
+        usernames = []
+        sizes = []
+        i = 0
+        while i < len(data_list):
+            usernames.append(data_list[i]["username"])
+            sizes.append(data_list[i]["total_amount_of_flowers"] * 100  + data_list[i]["current_flower"])
+            i+=1
 
-            bubble(sizes, usernames)
+        bubble(sizes, usernames)
 
-            i = 0
-            answer = ""
-            while i<len(sizes):
-                for n in data_list:
-                    if n["username"] == usernames[i]:
-                        flowers = n["total_amount_of_flowers"]
-                        current = n["current_flower"]
-                answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" цветочков и " + str(current) + " цветочковых единиц\n"
-                i+=1
+        i = 0
+        answer = ""
+        while i<len(sizes):
+            for n in data_list:
+                if n["username"] == usernames[i]:
+                    flowers = n["total_amount_of_flowers"]
+                    current = n["current_flower"]
+            answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" цветочков и " + str(current) + " цветочковых единиц\n"
+            i+=1
             
-            return answer
-        else:
-            return "Это не паблик чат"
+        return answer
     except:
         return "Лол я умерла"
+
+def userCanGive(flowers, amount):
+    return True if flowers>amount else False
+
+def sendFlower(message, amount=1):
+    if message.chat.type == "private":
+        return "Работает только в паблик чатах"
+    # from
+    idUserOne = message.from_user.id
+    # to
+    if message.reply_to_message != None:
+        idUserTwo = message.reply_to_message.from_user.id
+    else:
+        return "Ответь на сообщение того кому хочешь подарить цветок!"
+
+    # getting user one data
+    dataUserOne = getFlowerDataWithCheck(idUserOne)
+    if dataUserOne == None:
+        return "Тебя нету в мое базе("
+
+    # getting user two data
+    dataUserTwo = getFlowerDataWithCheck(idUserTwo)
+    if dataUserTwo == None:
+        return "Этого пользователя нету в мое базе("
+    
+    if not userCanGive(dataUserOne["total_amount_of_flowers"], amount):
+        return "У тебя нету цветков!"
+
+    # adding flower
+    dataUserTwo["total_amount_of_flowers"]+=amount
+    # removing flower
+    dataUserOne["total_amount_of_flowers"]-=amount
+    
+
+    # saving changes
+    writeFlowerData(idUserOne, dataUserOne)
+    writeFlowerData(idUserTwo, dataUserTwo)
+
+    return f"Ты успешно подарил 1 цветок!\nУ тебя осталось еще {dataUserOne['total_amount_of_flowers']} цветков!"
