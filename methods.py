@@ -14,6 +14,8 @@ def zhannaReplies(zhanna, message, answer):
     except:
         pass
 
+# ====================== sending answer to start command ======================
+
 def start(chatId):
     if chatId == ZHANNA_ID:
         name = "зайка по имени Жанна"
@@ -26,6 +28,10 @@ def start(chatId):
     answer = "Привет, %s" %name
     return answer
 
+# ====================== sending answer to start command ======================
+
+# ====================== sending random NHIE from json file ======================
+
 def getNHIEAnswer(message):
     answer = random.choice(getNeverHaveIEver())
     if isInNeverEver(message, answer):
@@ -34,16 +40,9 @@ def getNHIEAnswer(message):
         except:
             return getNeverHaveIEver()[0]
     return answer
+# ====================== sending random NHIE from json file ======================
 
-def getName(userid):
-    if userid == TATI_ID:
-        name = "Тати"
-    elif userid == ZHANNA_ID:
-        name = "Жанна"
-    else:
-        name = False
-
-    return name
+# ====================== sending random yes or no ======================
 
 def getDanet():
     firstPart = ["Видимо ", "Точно ", "Я сказала ", "Походу ", 
@@ -51,6 +50,10 @@ def getDanet():
     secondPart = ["да", "нет"]
     answer = random.choice(firstPart) + random.choice(secondPart)
     return answer
+
+# ====================== sending random yes or no ======================
+
+# ====================== sending random fortune cookie from json file ======================
 
 def getFortuneCookie(message):
     d = getLastTimePlayed(message) # d - day
@@ -61,6 +64,10 @@ def getFortuneCookie(message):
         answer = "Ты уже узнал свой гороскоп на сегодня!"
 
     return answer
+
+# ====================== sending random fortune cookie from json file ======================
+
+# ====================== sending alcohol ======================
 
 def getAlcohol(chatId):
     types = ["Хватит пить!", "наливка в пьяной вишне", "наливка в белом наливе",
@@ -82,6 +89,10 @@ def getAlcohol(chatId):
     else:
         return "Хватит пить!"
 
+# ====================== sending alcohol ======================
+
+# ====================== logs ======================
+
 def consoleOutput(message, answer):
     print("Мне написал человек с юзернеймом: %s" % message.from_user.username)
     print("Имя у него: %s" %message.from_user.first_name)
@@ -96,8 +107,16 @@ def consoleOutput(message, answer):
     except:
         pass
 
+# ====================== logs ======================
+
+# ====================== sending random tost from json file ======================
+
 def getTostAnswer():
     return random.choice(getTosts())
+
+# ====================== sending random tost from json file ======================
+
+# ====================== answer when user writes text ======================
 
 def sendingAnswer(id, answer):
     answer = answerCheck(answer)
@@ -106,9 +125,18 @@ def sendingAnswer(id, answer):
             return answer.replace("@rarezhanna", "меня")
     return answer
 
-# TODO: refactore code!
+def getName(userid):
+    if userid == TATI_ID:
+        name = "Тати"
+    elif userid == ZHANNA_ID:
+        name = "Жанна"
+    else:
+        name = False
+
+    return name
+
 def getAnswer(message):
-    # Firstly it checks the user id is tati`s or zhanna`s id
+    # First of all it checks the user id is tati`s or zhanna`s id
     name = getName(message.from_user.id)
     if name:
         # and then it checs if 
@@ -127,53 +155,56 @@ def getAnswer(message):
     else:
         return sendingAnswer(message.from_user.id, answer)
     return None
+# ====================== answer when user writes text ======================
 
-# TODO: refactor this part of code
-# calculating answer for antipara command
+# ====================== pair of antipara ======================
+
+def moreThanTwoUsersInChat(data):
+    return True if len(data["chat_users"]) >= 2 else False
+
+def canPlayAntipara(data):
+    return True if data["last_time_played_antipara"] != int(datetime.datetime.now().day) else False
+
 def getAntipara(message):
-    # works only in public chats
-    # check for chat type
-    if message.chat.type != "private":
-        # check if chat exist in base
-        if userExist(message.chat.id):
-            # getting chat data
-            data = readData(message.chat.id)
-            # you can only play it once per day
-            if data["last_time_played_antipara"] != int(datetime.datetime.now().day):
-                # check if there is at least 2 registered chat users
-                if len(data["chat_users"]) >= 2:
-                    # list which will contain two random chosen users
-                    pair = []
-                    while len(pair) != 2:
-                        # random choice from registered chat users
-                        user = random.choice(data["chat_users"])
-                        # check if there are the same user in pair
-                        if user not in pair:
-                            # if not then append it into the pair
-                            pair.append(user)
-                    # changing last time played
-                    data["last_time_played_antipara"] = int(datetime.datetime.now().day)
-                    # changing antipara of the day
-                    data["antipara"] = "Антипара дня: @" + pair[0]["username"] + " и  @" + pair[1]["username"]
-                    # saving chat data
-                    writeData(message.chat.id, data)
-                    # returning antipara of the day
-                    return data["antipara"]
-                else:
-                    return "У меня меньше двух зарегестрированых юзеров"
-            else:
-                # returning previous antipara without "@" to avoid tagging people
-                return "Антипара уже выбрана!\n" + data["antipara"].replace("@", "")
-        # if chat doesnt exist in then add it
-        else:
-            # creating base for chat
-            newChat(message)
-            # recursion this method
-            getAntipara(message)
-    else:
-        # if chat is public then returning None
+    if message.chat.type == "private":
         return None
 
+    if not userExist(message.chat.id):
+        # creating base for chat
+        newChat(message)
+        # recursion this method
+        getAntipara(message)
+
+    # getting chat data    
+    data = readData(message.chat.id)
+    # returning previous antipara without "@" to avoid tagging people
+    if not canPlayAntipara(data):
+        return "Антипара уже выбрана!\n" + data["antipara"].replace("@", "")
+    
+    if not moreThanTwoUsersInChat(data):
+        return "У меня меньше двух зарегестрированых юзеров"
+    
+    # list which will contain two random chosen users
+    pair = []
+    while len(pair) != 2:
+        # random choice from registered chat users
+        user = random.choice(data["chat_users"])
+        # check if there are the same user in pair
+        if user not in pair:
+            # if not then append it into the pair
+            pair.append(user)
+    # changing last time played
+    data["last_time_played_antipara"] = int(datetime.datetime.now().day)
+    # changing antipara of the day
+    data["antipara"] = "Антипара дня: @" + pair[0]["username"] + " и  @" + pair[1]["username"]
+    # saving chat data
+    writeData(message.chat.id, data)
+    # returning antipara of the day
+    return data["antipara"]
+# ====================== pair of antipara ======================
+
+# ====================== randomly picked one user ======================
+# TODO: refactor it
 def getCorona(message):
 # works only in group chats
     if message.chat.type != "private":
@@ -198,8 +229,9 @@ def getCorona(message):
     else:
         # if chat type is private then bot doesnt send answer
         return "Это работает только в публичных группах"
+# ====================== randomly picked one user ======================
 
-# flower
+# ====================== growing flower ======================
 
 def canGrowFlower(data):
     date = datetime.datetime.now()
@@ -255,34 +287,44 @@ def whenCanGrowAgain(time):
             time=0
     return time
 
+
 def flower(message):
     data = getFlowerData(message)
-    if canGrowFlower(data):
-        if flowerDies():
-            writeToGraveYard(data["username"], data["first_name"], data["current_flower"])
-            data["current_flower"] = 0
-            answer = "йой, кажется твой цветочек умер, обнуляем результаты"
-        else:
-            data["current_flower"] = flowerGrows(data["current_flower"], data["id"])
-            if data["current_flower"] >= 100:
-                data["total_amount_of_flowers"] += 1
-                data["current_flower"] = 0
-                answer = "Твой цветочек уже вырос! у тебя уже %s цветочков"%data["total_amount_of_flowers"]  
-            else:
-                answer = "У твоего цветочка уже %s цветочных баллов" %data["current_flower"] 
-    
-        data = editLastTimePlayedFlower(data)
-        # saving changes
-        writeFlowerData(message.from_user.id, data)
-
-        return answer
-    else:
+    if not canGrowFlower(data):
         return "цветочки не растут так часто, их можно растить раз в 6 часов, попробуй еще раз в %s:00" %whenCanGrowAgain(data["last_time_played"][3])
+
+    if flowerDies():
+        writeToGraveYard(data["username"], data["first_name"], data["current_flower"])
+        data["current_flower"] = 0
+        answer = "йой, кажется твой цветочек умер, обнуляем результаты"
+    else:
+        data["current_flower"] = flowerGrows(data["current_flower"], data["id"])
+
+        if data["current_flower"] >= 100:
+            data["total_amount_of_flowers"] += 1
+            data["current_flower"] = 0
+            answer = "Твой цветочек уже вырос! у тебя уже %s цветочков"%data["total_amount_of_flowers"]  
+
+        else:
+            answer = "У твоего цветочка уже %s цветочных баллов" %data["current_flower"] 
+    
+    data = editLastTimePlayedFlower(data)
+    # saving changes
+    writeFlowerData(message.from_user.id, data)
+
+    return answer
+
+# ====================== growing flower ======================
+
+# ====================== get flower data to user ======================
 
 def getFlowers(message):
     data = getFlowerData(message)
     return "У тебя уже " + str(data["total_amount_of_flowers"]) + " вырощенных цветочков! А у цветочка, который ты выращиваешь сейчас " + str(data["current_flower"]) + f" цветочковых баллов.\n\nДополнительный прирост: {getExtra(data['id'])}"
 
+# ====================== get flower data to user ======================
+
+# ====================== top flowers in chat ======================
 def bubble(array, array2):
     for i in range(len(array)-1):
         for j in range(len(array)-i-1):
@@ -294,6 +336,28 @@ def bubble(array, array2):
                 array2[j] = array2[j+1]
                 array2[j+1] = buff1
 
+def buildTopFlowersAnswer(data_list, sizes, usernames):
+    i = 0
+    answer = ""
+    while i<len(sizes):
+        for n in data_list:
+            if n["username"] == usernames[i]:
+                flowers = n["total_amount_of_flowers"]
+                current = n["current_flower"]
+        answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" цветочков и " + str(current) + " цветочковых единиц\n"
+        i+=1
+
+    return answer
+
+def getUsersData(chatUsers):
+    data_list = []
+    for n in chatUsers:
+        if userFlowerDataExist(n):
+            data = reatFlowerData(n)
+            data_list.append(data)
+
+    return data_list
+
 # TODO: holy fuck just refactor this pizdec
 def getTopFlowers(message):
     if message.chat.type == "private":
@@ -303,11 +367,7 @@ def getTopFlowers(message):
         data = getFlowerData(message)
         chatData = reatFlowerData(message.chat.id)
 
-        data_list = []
-        for n in chatData["chat_users"]:
-            if userFlowerDataExist(n):
-                data = reatFlowerData(n)
-                data_list.append(data)
+        data_list = getUsersData(chatData["chat_users"])
 
         usernames = []
         sizes = []
@@ -318,20 +378,14 @@ def getTopFlowers(message):
             i+=1
 
         bubble(sizes, usernames)
-
-        i = 0
-        answer = ""
-        while i<len(sizes):
-            for n in data_list:
-                if n["username"] == usernames[i]:
-                    flowers = n["total_amount_of_flowers"]
-                    current = n["current_flower"]
-            answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" цветочков и " + str(current) + " цветочковых единиц\n"
-            i+=1
             
-        return answer
+        return buildTopFlowersAnswer(data_list, sizes, usernames)
     except:
-        return "Лол я умерла"
+        return "Лол я умерлa\n@supperdoggy"
+
+# ====================== top flowers in chat ======================
+
+# ====================== sending flowers ======================
 
 def userCanGive(flowers, amount):
     return True if flowers>amount else False
@@ -371,3 +425,5 @@ def sendFlower(message, amount=1):
     writeFlowerData(idUserTwo, dataUserTwo)
 
     return f"Ты успешно подарил 1 цветок!\nУ тебя осталось еще {dataUserOne['total_amount_of_flowers']} цветков!"
+
+# ====================== sending flowers ======================
