@@ -344,7 +344,7 @@ def buildTopFlowersAnswer(data_list, sizes, usernames):
             if n["username"] == usernames[i]:
                 flowers = n["total_amount_of_flowers"]
                 current = n["current_flower"]
-        answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" цветочков и " + str(current) + " цветочковых единиц\n"
+        answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" 🌷, " + str(current) + "🌱\n"
         i+=1
 
     return answer
@@ -363,25 +363,22 @@ def getTopFlowers(message):
     if message.chat.type == "private":
         return "Это не паблик чат"
     
-    try:
-        data = getFlowerData(message)
-        chatData = reatFlowerData(message.chat.id)
+    data = getFlowerData(message)
+    chatData = reatFlowerData(message.chat.id)
 
-        data_list = getUsersData(chatData["chat_users"])
+    data_list = getUsersData(chatData["chat_users"])
 
-        usernames = []
-        sizes = []
-        i = 0
-        while i < len(data_list):
-            usernames.append(data_list[i]["username"])
-            sizes.append(data_list[i]["total_amount_of_flowers"] * 100  + data_list[i]["current_flower"])
-            i+=1
+    usernames = []
+    sizes = []
+    i = 0
+    while i < len(data_list):
+        usernames.append(data_list[i]["username"])
+        sizes.append(data_list[i]["total_amount_of_flowers"] * 100  + data_list[i]["current_flower"])
+        i+=1
 
-        bubble(sizes, usernames)
+    bubble(sizes, usernames)
             
-        return buildTopFlowersAnswer(data_list, sizes, usernames)
-    except:
-        return "Лол я умерлa\n@supperdoggy"
+    return buildTopFlowersAnswer(data_list, sizes, usernames)
 
 # ====================== top flowers in chat ======================
 
@@ -401,6 +398,9 @@ def sendFlower(message, amount=1):
     else:
         return "Ответь на сообщение того кому хочешь подарить цветок!"
 
+    if idUserOne == idUserTwo:
+        return "Нахуй  иди ок? Багоюзер ебаный"
+
     # getting user one data
     dataUserOne = getFlowerDataWithCheck(idUserOne)
     if dataUserOne == None:
@@ -419,7 +419,6 @@ def sendFlower(message, amount=1):
     # removing flower
     dataUserOne["total_amount_of_flowers"]-=amount
     
-
     # saving changes
     writeFlowerData(idUserOne, dataUserOne)
     writeFlowerData(idUserTwo, dataUserTwo)
