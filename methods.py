@@ -60,8 +60,9 @@ def getFortuneCookie(message):
     if str(datetime.datetime.now().day) != str(d):
         data = getData()
         answer = random.choice(data)
+        editPreviousCookie(message, answer,str(d))
     else:
-        answer = "Ты уже узнал свой гороскоп на сегодня!"
+        answer = "Ты уже узнал свой гороскоп на сегодня!\n\n" + getPreviousCookie(message, "", str(d))
 
     return answer
 
@@ -261,15 +262,13 @@ def editLastTimePlayedFlower(data):
     data["last_time_played"][3] = date.hour
     return data
 
-def flowerGrows(currentSize, userId):
+def flowerGrows(userId):
     try:
         amountOfMessages = len(readData(userId)["questions"])
     except:
         amountOfMessages = 0
-    extra = int(amountOfMessages *  MESSAGE_MULTIPLYER)
-    extra = extra if extra <=20 else 20
-    currentSize += random.randint(LOWER_RANDOM_FLOWER_NUMBER, HIGHER_RANDOM_FLOWER_NUMBER) + extra
-    return int(currentSize)
+    extra = int(amountOfMessages *  MESSAGE_MULTIPLYER) if int(amountOfMessages *  MESSAGE_MULTIPLYER) <=20 else 20
+    return int(random.randint(LOWER_RANDOM_FLOWER_NUMBER, HIGHER_RANDOM_FLOWER_NUMBER) + extra)
 
 def getExtra(userId):
     try:
@@ -287,7 +286,6 @@ def whenCanGrowAgain(time):
             time=0
     return time
 
-
 def flower(message):
     data = getFlowerData(message)
     if not canGrowFlower(data):
@@ -298,15 +296,16 @@ def flower(message):
         data["current_flower"] = 0
         answer = "йой, кажется твой цветочек умер, обнуляем результаты"
     else:
-        data["current_flower"] = flowerGrows(data["current_flower"], data["id"])
+        grow = flowerGrows(data["id"])
+        data["current_flower"] += grow
 
         if data["current_flower"] >= 100:
             data["total_amount_of_flowers"] += 1
             data["current_flower"] = 0
-            answer = "Твой цветочек уже вырос! у тебя уже %s цветочков"%data["total_amount_of_flowers"]  
+            answer = "Твой цветочек уже вырос! у тебя уже %s цветочков 🌷"%data["total_amount_of_flowers"]  
 
         else:
-            answer = "У твоего цветочка уже %s цветочных баллов" %data["current_flower"] 
+            answer = f"Твой цветочек вырос на {grow} цветочковых единиц\nУ тебя уже {data['total_amount_of_flowers']}🌷 и {data['current_flower']}🌱"
     
     data = editLastTimePlayedFlower(data)
     # saving changes
@@ -320,7 +319,7 @@ def flower(message):
 
 def getFlowers(message):
     data = getFlowerData(message)
-    return "У тебя уже " + str(data["total_amount_of_flowers"]) + " вырощенных цветочков! А у цветочка, который ты выращиваешь сейчас " + str(data["current_flower"]) + f" цветочковых баллов.\n\nДополнительный прирост: {getExtra(data['id'])}"
+    return "У тебя уже " + str(data["total_amount_of_flowers"]) + "🌷 и " + str(data["current_flower"]) + f"🌱.\n\nДополнительный прирост: {getExtra(data['id'])}"
 
 # ====================== get flower data to user ======================
 
@@ -344,7 +343,7 @@ def buildTopFlowersAnswer(data_list, sizes, usernames):
             if n["username"] == usernames[i]:
                 flowers = n["total_amount_of_flowers"]
                 current = n["current_flower"]
-        answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +" 🌷, " + str(current) + "🌱\n"
+        answer += str(i+1) + ": " + str(usernames[i]) + str(" - ") + str(flowers) +"🌷, " + str(current) + "🌱\n"
         i+=1
 
     return answer
@@ -358,7 +357,6 @@ def getUsersData(chatUsers):
 
     return data_list
 
-# TODO: holy fuck just refactor this pizdec
 def getTopFlowers(message):
     if message.chat.type == "private":
         return "Это не паблик чат"
@@ -426,3 +424,56 @@ def sendFlower(message, amount=1):
     return f"Ты успешно подарил 1 цветок!\nУ тебя осталось еще {dataUserOne['total_amount_of_flowers']} цветков!"
 
 # ====================== sending flowers ======================
+# ====================== saving previous future cookie ======================
+
+def readPreviousCookie(id):
+    try:
+        return open(FULL_PATH + "cookies/%s.json"%id, "r")
+    except:
+        return None
+
+def writePreviousCookie(id):
+    try:
+        return open(FULL_PATH + "cookies/%s.json"%id, "w+")
+    except:
+        return None
+
+def createPreviousCookie(message, cookie, LastTimePlayed):
+    f = writePreviousCookie(message.from_user.id)
+    data = readData(message.from_user.id)
+    js = {
+        "id":message.from_user.id,
+        "text": cookie,
+        "username": message.from_user.username,
+        "last_time_played": LastTimePlayed
+    }
+    json.dump(js, f)
+    f.close()
+    return cookie
+
+def getPreviousCookie(message, cookie, LastTimePlayed):
+    try:
+        if not previousCookieExists(message.from_user.id):
+            createPreviousCookie(message, cookie, LastTimePlayed)
+            editPreviousCookie(message, cookie, LastTimePlayed)
+        data = readPreviousCookie(message.from_user.id)
+        return json.load(data)["text"]
+    except:
+        return ""
+
+def previousCookieExists(userId):
+    return True if os.path.exists(FULL_PATH + "cookies/%s.json"%userId)  else False
+
+def editPreviousCookie(message, cookie, LastTimePlayed):
+    if not previousCookieExists(message.from_user.id):
+        createPreviousCookie(message, cookie, LastTimePlayed)
+        editPreviousCookie(message, cookie, LastTimePlayed)
+    f = writePreviousCookie(message.from_user.id)
+    js = {
+        "id":message.from_user.id,
+        "text": cookie,
+        "username": message.from_user.username,
+        "last_time_played": str(datetime.datetime.now().day)
+    }
+    json.dump(js, f)
+    f.close()
