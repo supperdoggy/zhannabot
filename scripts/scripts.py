@@ -1,5 +1,6 @@
 import json
-from constants import FULL_PATH
+import os
+import random
 
 def structuringData():
     with open(FULL_PATH + "preds.txt") as f:
@@ -110,3 +111,38 @@ def structDate():
     for n in lineList:
         print(n)
     
+def getRandomFlowerType():
+    types = ["🌱 Паросток", "🌹 Роза", "🥀 Роза которая спит", "🌷 Тюльпан", 
+            "🌻 Подсолнух", "🌼 Гардения", "🌺 Азалия", "🌸 Адениум"]
+    choice = random.choice(types)
+    js = {
+        "fullname": choice,
+        "durability": 100,
+        "icon": choice[0],
+        "name": choice[2:]
+    }
+    return js
+
+def structFlowerTypes():
+    #{"id": 181474052, "username": "vikastrange", 
+    # "first_name": "V", "last_name": null, 
+    # "last_time_played": [2020, 4, 28, 0], 
+    # "current_flower": 0, 
+    # "total_amount_of_flowers": 25}
+    lst = os.listdir(FULL_PATH+"flower_data")
+    for n in lst:
+        if n[0] == "-": continue
+        dt = json.load(open(FULL_PATH+"flower_data/"+n,"r"))
+        print(dt)
+        js = {
+            "id":dt["id"],
+            "first_name":dt["first_name"],
+            "username": dt["username"],
+            "total_amount_of_flowers":dt["total_amount_of_flowers"],
+            "types": [getRandomFlowerType() for n in range(dt["total_amount_of_flowers"])]
+
+        }
+        json.dump(js, open(FULL_PATH+"user-flower-types/%s"%n, "w+"))
+
+if __name__ == "__main__":
+    structFlowerTypes()
