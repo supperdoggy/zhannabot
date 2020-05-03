@@ -168,6 +168,13 @@ def getLastTimePlayed(message):
         data = readData(message.from_user.id)
         return data["last_time_played_fortune"]
 
+def storeLogs(data):
+    if os.path.exists(FULL_PATH+"logs/"+ datetime.date.today() + ".txt"):
+        open(FULL_PATH+"logs/"+ datetime.date.today() + ".txt", "a").write(data)
+    else:
+        open(FULL_PATH+"logs/"+ datetime.date.today() + ".txt", "w+").write(data)
+
+
 def storeAnswerAndQuestion(message, answer):
     if userExist(message.from_user.id):
         data = readData(message.from_user.id)

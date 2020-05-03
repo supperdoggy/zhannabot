@@ -95,18 +95,14 @@ def getAlcohol(chatId):
 # ====================== logs ======================
 
 def consoleOutput(message, answer):
-    print("Мне написал человек с юзернеймом: %s" % message.from_user.username)
-    print("Имя у него: %s" %message.from_user.first_name)
-    print("Фамилия у него: %s" %message.from_user.last_name)
-    print("Юзер забанен: %s" % isBanned(message.from_user.id))
-    print("Текст сообщения: %s" %message.text)
-    print("Я ответила: %s" % answer)
-    print("Время: %s"%datetime.datetime.now())
-    print("=" * 10)
+    text = f"Мне написал человек с юзернеймом: {message.from_user.username}\nИмя у него: {message.from_user.first_name}\nФамилия у него: {message.from_user.last_name}\n" +\
+            f"Юзер забанен: {isBanned(message.from_user.id)}\nId пользователя: {message.from_user.id}\nТекст сообщения: {message.text}\nЯ ответила: {answer}\n" +\
+            f"Время: {datetime.datetime.now()}\n" + "=" * 10 + "\n"
     try:
         storeAnswerAndQuestion(message, answer)
     except:
         pass
+    storeLogs(text)
 
 # ====================== logs ======================
 
