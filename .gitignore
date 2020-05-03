@@ -10,3 +10,7 @@ grave_yard
 user-flower-types
 backups
 logs
+scripts
+scripts/autobackup.py
+scripts/autobackup.py
+scripts/amountOfdata.py
