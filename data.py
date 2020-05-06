@@ -71,9 +71,11 @@ def newFlower(message):
         "last_name": message.from_user.last_name,
         "last_time_played": (-1, -1, -1, -1), # year, month, day, hour
         "current_flower": 0,
-        "total_amount_of_flowers": 0
+        "total_amount_of_flowers": 0,
+        "types":[]
     }
     writeFlowerData(message.from_user.id, data)
+
 
 def writeFlowerData(id, data):
     with open(FULL_PATH + "flower_data/%s.json"%id, "w+") as outfile:

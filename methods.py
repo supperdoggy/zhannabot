@@ -298,8 +298,10 @@ def flower(message):
         if data["current_flower"] >= 100:
             data["total_amount_of_flowers"] += 1
             data["current_flower"] = 0
+            # adding flower new flower type
             flowerType = getRandomFlowerType()
-            addnewFlower(message, flowerType)
+            data["types"].append(flowerType)
+
             answer = f"Твой {flowerType['icon']} уже вырос! у тебя уже {data['total_amount_of_flowers']} цветочков 🌷"  
 
         else:
@@ -317,7 +319,7 @@ def flower(message):
 
 def getFlowers(message):
     data = getFlowerData(message)
-    return "У тебя уже " + str(data["total_amount_of_flowers"]) + "🌷 и " + str(data["current_flower"]) + f"🌱.\n\nДополнительный прирост: {getExtra(data['id'])}"
+    return "У тебя уже " + str(data["total_amount_of_flowers"]) + "🌷 и " + str(data["current_flower"]) + f"🌱.\n\nДополнительный прирост: {getExtra(data['id'])}\n\n{getFlowerTypes(data['types'])}"
 
 # ====================== get flower data to user ======================
 
@@ -395,7 +397,7 @@ def sendFlower(message, amount=1):
         return "Ответь на сообщение того кому хочешь подарить цветок!"
 
     if idUserOne == idUserTwo:
-        return "Нахуй  иди ок? Багоюзер ебаный"
+        return "Нельзя дарить цветки самому себе"
 
     # getting user one data
     dataUserOne = getFlowerDataWithCheck(idUserOne)
@@ -414,12 +416,14 @@ def sendFlower(message, amount=1):
     dataUserTwo["total_amount_of_flowers"]+=amount
     # removing flower
     dataUserOne["total_amount_of_flowers"]-=amount
+
+    # removing and adding to second  user flower type
+    FlowerType = dataUserOne["types"].pop()
+    dataUserTwo["types"].append(FlowerType)
     
     # saving changes
     writeFlowerData(idUserOne, dataUserOne)
     writeFlowerData(idUserTwo, dataUserTwo)
-
-    sendFlowerType(idUserOne, idUserTwo)
 
     return f"Ты успешно подарил 1 цветок!\nУ тебя осталось еще {dataUserOne['total_amount_of_flowers']} цветков!"
 
@@ -480,29 +484,9 @@ def editPreviousCookie(message, cookie, LastTimePlayed):
 
 # ====================== flowers types ======================
 
-def loadFlowerTypesData(userId):
-    try:
-        f = open(FULL_PATH + "user-flower-types/%s.json"%userId, "r")
-        data = json.load(f)
-        f.close()
-        return data
-    except:
-        return None
-
-def dumpFlowerTypesData(userid, data):
-    try:
-        f = open(FULL_PATH + "user-flower-types/%s.json"%userid, "w+")
-        json.dump(data, f)
-        f.close()
-    except:
-        return None
-
-def flowerTypesDataExists(userid):
-    return True if os.path.exists(FULL_PATH+"user-flower-types/%s.json"%userid) else False
-
 def getRandomFlowerType():
     types = ["🌱 Паросток", "🌹 Роза", "🥀 Роза которая спит", "🌷 Тюльпан", 
-            "🌻 Подсолнух", "🌼 Гардения", "🌺 Азалия", "🌸 Адениум"]
+            "🌻 Подсолнух", "🌼 Гардения", "🌺 Азалия", "🌸 Адениум", "🌵 Кактус Валерий", "🎋 Бамбук", "🌸 Астра", "🦠 Ковид-19"]
     choice = random.choice(types)
     js = {
         "fullname": choice,
@@ -512,63 +496,16 @@ def getRandomFlowerType():
     }
     return js
 
-def newFlowerTypesData(userid):
-    dt = json.load(open(FULL_PATH+"flower_data/%s.json"%userid,"r"))
-    print(dt)
-    js = {
-        "id":dt["id"],
-        "first_name":dt["first_name"],
-        "username": dt["username"],
-        "total_amount_of_flowers":dt["total_amount_of_flowers"],
-        "types": [getRandomFlowerType() for n in range(dt["total_amount_of_flowers"])]
-
-    }
-    dumpFlowerTypesData(userid, js)
-
-def addnewFlower(message, flower):
-    if not flowerTypesDataExists(message.from_user.id):
-        newFlowerTypesData(message.from_user.id)
-        addnewFlower(message, flower)
-    data = loadFlowerTypesData(message.from_user.id)
-    data["total_amount_of_flowers"]+=1
-    data["types"].append(flower)
-    dumpFlowerTypesData(message.from_user.id, data)
-
-def countFlowerTypes(data):
+def countFlowerTypes(types):
     d = dict()
-    for n in data["types"]:
+    for n in types:
         d[n["fullname"]] = d.get(n["fullname"], 0)+1
     return d
-        
 
-def getFlowerTypes(message):
-    if not flowerTypesDataExists(message.from_user.id):
-        newFlowerTypesData(message.from_user.id)
-        getFlowerTypes(message)
+def getFlowerTypes(types):
     text = "Твои кровные цветки:\n"
-    data = loadFlowerTypesData(message.from_user.id)
-    countedData = countFlowerTypes(data)
-    for k, v in countedData.items():
+    d = countFlowerTypes(types)
+    for k, v in d.items():
         text+=f"{k}: {v}\n"
     return text
-
-def sendFlowerType(from_user, to_user):
-    from_userdata = loadFlowerTypesData(from_user)
-    to_userdata =  loadFlowerTypesData(to_user)
-    to_userdata["types"].append(from_userdata["types"][-1])
-    from_userdata["types"].pop()
-    dumpFlowerTypesData(from_user, from_userdata)
-    dumpFlowerTypesData(to_user, to_userdata)
-#     types = ["🌱 Паросток", "🌹 Роза", "🥀 Роза которая спит", "🌷 Тюльпан", 
-#             "🌻 Подсолнух", "🌼 Гардения", "🌺 Азалия", "🌸 Адениум"]
-#     choice = random.choice(types)
-#     js = {
-#         "fullname": choice,
-#         "durability": 100,
-#         "icon": choice[0],
-#         "name": choice[2:]
-#     }
-#     return js
-
-    
 

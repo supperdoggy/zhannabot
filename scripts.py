@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from constants import FULL_PATH
 
 def structuringData():
     with open(FULL_PATH + "preds.txt") as f:
@@ -144,5 +145,37 @@ def structFlowerTypes():
         }
         json.dump(js, open(FULL_PATH+"user-flower-types/%s"%n, "w+"))
 
+def refactorFlowerData():
+    # id: 
+    # username:
+    # first_name:
+    # last_name:
+    # last_time_played: [y, m, d, h]
+    # current_flower
+    # total_amount_of_flowers
+    # types:
+    lst = os.listdir(FULL_PATH+"flower_data")
+    for n in lst:
+        if n[0]=="-":continue
+        try:
+            dt = json.load(open(FULL_PATH+"flower_data/"+n,"r"))
+            fltypes = json.load(open(FULL_PATH+"user-flower-types/"+n, "r"))
+            js = {
+                "id":dt["id"],
+                "first_name":dt["first_name"],
+                "last_name":dt["last_name"],
+                "last_time_played":dt["last_time_played"],
+                "current_flower":dt["current_flower"],
+                "username": dt["username"],
+                "total_amount_of_flowers":dt["total_amount_of_flowers"],
+                "types":[n for n in fltypes["types"]]
+            }
+            json.dump(js, open(FULL_PATH+"flower_data/%s"%n, "w+"))
+            print(f"{n} good")
+        except:
+            print(f"{n} NOT GOOD")
+    print("Done!")
+
+
 if __name__ == "__main__":
-    structFlowerTypes()
+    refactorFlowerData()

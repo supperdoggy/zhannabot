@@ -145,7 +145,7 @@ def myFlowers(message):
     # check for chat and user data base
     userDataBase(message)
     # getting answer
-    answer = getFlowers(message) + "\n" + getFlowerTypes(message)
+    answer = getFlowers(message)
     # zhanna replies
     zhannaReplies(zhanna, message, answer)
     # console output for administration
