@@ -1,7 +1,7 @@
 import json
 import os
 import random
-from constants import FULL_PATH
+from constants.constants import FULL_PATH
 
 def structuringData():
     with open(FULL_PATH + "preds.txt") as f:

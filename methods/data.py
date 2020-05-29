@@ -2,18 +2,19 @@ import random
 import json
 import datetime
 import os
-from constants import FULL_PATH
+from constants.constants import *
 
 # flowers
 
 def writeToGraveYard(username, first_name, size):
+    path = f"{FULL_PATH}{FLOWER_GRAVE_YARD_PATH}/lol.txt"
     try:
-        f = open(FULL_PATH + "grave_yard/lol.txt", "a+")
+        f = open(path, "a+")
         lol = "="*10 + "\n" + "Время смерти: " + str(datetime.datetime.now()) + "\n" + "Имя пострадавшего: " + str(first_name) + "\n" + "Юзернейм пострадавшего: " + str(username) + "\n" + "Размер цветка: " + str(size) + "\n"
         f.write(lol)
         f.close()
     except:
-        f = open(FULL_PATH + "grave_yard/lol.txt", "w+")
+        f = open(path, "w+")
         lol = "="*10 + "\n" + "Время смерти: " + str(datetime.datetime.now()) + "\n" + "Имя пострадавшего: " + str(first_name) + "\n" + "Юзернейм пострадавшего: " + str(username) + "\n" + "Размер цветка: " + str(size) + "\n"
         f.write(lol)
         f.close()
@@ -35,7 +36,7 @@ def flowerChat(message):
         flowerChat(message)
 
 def userFlowerDataExist(id):
-    return True if os.path.exists(FULL_PATH + "flower_data/%s.json"%id) else False
+    return True if os.path.exists(f"{FULL_PATH}{FLOWER_DATA_PATH}/{id}.json") else False
 
 def userInFlowerChat(userId, chatId):
     return True if userId in reatFlowerData(chatId)["chat_users"] else False
@@ -78,12 +79,12 @@ def newFlower(message):
 
 
 def writeFlowerData(id, data):
-    with open(FULL_PATH + "flower_data/%s.json"%id, "w+") as outfile:
+    with open(f"{FULL_PATH}{FLOWER_DATA_PATH}/{id}.json", "w+") as outfile:
         json.dump(data, outfile)
     outfile.close()
 
 def reatFlowerData(id):
-    with open(FULL_PATH + 'flower_data/%s.json' %id) as outfile:
+    with open(f"{FULL_PATH}{FLOWER_DATA_PATH}/{id}.json") as outfile:
         data = json.load(outfile)
     outfile.close()
     return data
@@ -91,19 +92,19 @@ def reatFlowerData(id):
 # flowers
 
 def getData():
-    f = open(FULL_PATH + "fortuneCookies.json", "r")
+    f = open(FULL_PATH + FORTUNE_DATA_PATH, "r")
     data = json.load(f)
     f.close()
     return data
 
 def getTosts():
-    f = open(FULL_PATH + "Tosts.json", "r")
+    f = open(FULL_PATH + TOSTS_DATA_PATH, "r")
     data = json.load(f)
     f.close()
     return data
 
 def getNeverHaveIEver():
-    f = open(FULL_PATH + "neverever.json", "r")
+    f = open(FULL_PATH + NEVER_HAVE_I_EVER_DATA_PATH, "r")
     data = json.load(f)
     f.close()
     return data
@@ -126,7 +127,7 @@ def userInChat(message):
         userInChat(message)
 
 def userExist(id):
-    return os.path.exists(FULL_PATH + "data/%s.json"%id)
+    return os.path.exists(f"{FULL_PATH}{CHAT_DATA_PATH}/{id}.json")
 
 def newChat(message):
     if message.chat.type != "private":
@@ -171,10 +172,11 @@ def getLastTimePlayed(message):
         return data["last_time_played_fortune"]
 
 def storeLogs(data):
-    if os.path.exists(FULL_PATH+"logs/"+ str(datetime.date.today()) + ".txt"):
-        open(FULL_PATH+"logs/"+ str(datetime.date.today()) + ".txt", "a").write(data)
+    logsDataPath = f"{FULL_PATH}{LOGS_PATH}/{str(datetime.date.today())}.txt"
+    if os.path.exists(logsDataPath):
+        open(logsDataPath, "a").write(data)
     else:
-        open(FULL_PATH+"logs/"+ str(datetime.date.today()) + ".txt", "w+").write(data)
+        open(logsDataPath, "w+").write(data)
 
 
 def storeAnswerAndQuestion(message, answer):
@@ -190,13 +192,13 @@ def storeAnswerAndQuestion(message, answer):
         storeAnswerAndQuestion(message, answer)
 
 def readData(id):
-    with open(FULL_PATH + 'data/%s.json' %id) as outfile:
+    with open(f"{FULL_PATH}{CHAT_DATA_PATH}/{id}.json") as outfile:
         data = json.load(outfile)
     outfile.close()
     return data
 
 def writeData(id, data):
-    with open(FULL_PATH + 'data/%s.json' %id, 'w+') as outfile:
+    with open(f"{FULL_PATH}{CHAT_DATA_PATH}/{id}.json", 'w+') as outfile:
         json.dump(data, outfile)
     outfile.close()
 

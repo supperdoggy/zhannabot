@@ -1,10 +1,10 @@
 import telebot
 import random
-from data import *
+from methods.data import *
 import os
 import datetime
-from constants import TOKEN
-from methods import *
+from constants.constants import TOKEN
+from methods.methods import *
 import apiai, json
 
 # TODO: more punk

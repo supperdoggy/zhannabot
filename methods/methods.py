@@ -1,11 +1,11 @@
-from constants import ZHANNA_ID, TATI_ID, NEMOKS_ID, BOT_ID
-from cfg import *
+from constants.constants import *
+from config.cfg import *
 import random
 import os
-from data import *
+from methods.data import *
 import datetime
-from ml import *
-from access import isBanned
+from methods.ml import *
+from methods.access import isBanned
 
 def zhannaReplies(zhanna, message, answer):
     try:
@@ -93,7 +93,7 @@ def getAlcohol(chatId):
 # ====================== sending alcohol ======================
 
 # ====================== logs ======================
-
+# answer - zhannas answer
 def consoleOutput(message, answer):
     text = f"Мне написал человек с юзернеймом: {message.from_user.username}\nИмя у него: {message.from_user.first_name}\nФамилия у него: {message.from_user.last_name}\n" +\
             f"Юзер забанен: {isBanned(message.from_user.id)}\nId пользователя: {message.from_user.id}\nТекст сообщения: {message.text}\nЯ ответила: {answer}\n" +\
@@ -117,6 +117,7 @@ def getTostAnswer():
 
 def sendingAnswer(id, answer):
     answer = answerCheck(answer)
+    # Method checks if user is zhannas mamma of father etc
     if isBanned(id):
         if answer.lower().__contains__("@"):
             return answer.replace("@rarezhanna", "меня")
@@ -324,6 +325,8 @@ def getFlowers(message):
 # ====================== get flower data to user ======================
 
 # ====================== top flowers in chat ======================
+
+# bubble sotr for sorting top flower growers in chat
 def bubble(array, array2):
     for i in range(len(array)-1):
         for j in range(len(array)-i-1):
@@ -432,13 +435,13 @@ def sendFlower(message, amount=1):
 
 def readPreviousCookie(id):
     try:
-        return open(FULL_PATH + "cookies/%s.json"%id, "r")
+        return open(FULL_PATH + FORTUNE_USER_DATA_PATH + "/%s.json"%id, "r")
     except:
         return None
 
 def writePreviousCookie(id):
     try:
-        return open(FULL_PATH + "cookies/%s.json"%id, "w+")
+        return open(FULL_PATH + FORTUNE_USER_DATA_PATH + "/%s.json"%id, "w+")
     except:
         return None
 
@@ -466,7 +469,7 @@ def getPreviousCookie(message, cookie, LastTimePlayed):
         return ""
 
 def previousCookieExists(userId):
-    return True if os.path.exists(FULL_PATH + "cookies/%s.json"%userId)  else False
+    return True if os.path.exists(FULL_PATH + FORTUNE_USER_DATA_PATH + "/%s.json"%userId)  else False
 
 def editPreviousCookie(message, cookie, LastTimePlayed):
     if not previousCookieExists(message.from_user.id):
@@ -485,8 +488,9 @@ def editPreviousCookie(message, cookie, LastTimePlayed):
 # ====================== flowers types ======================
 
 def getRandomFlowerType():
-    types = ["🌱 Паросток", "🌹 Роза", "🥀 Роза которая спит", "🌷 Тюльпан", 
-            "🌻 Подсолнух", "🌼 Гардения", "🌺 Азалия", "🌸 Адениум", "🌵 Кактус Валерий", "🎋 Бамбук", "🌸 Астра", "🦠 Ковид-19"]
+    types = ["🌱 Паросток", "🌹 Роза", "🥀 Поминальная роза", "🌷 Тюльпан", 
+            "🌻 Подсолнух", "🌼 Гардения", "🌺 Азалия", "🌸 Адениум", "🌵 Кактус Валерий", "🎋 Бамбук", "🌸 Астра", "🦠 Ковид-19",
+            "🦠 Сифилис(((9(", "🦠 Гонорея", "🦠 СПИД"]
     choice = random.choice(types)
     js = {
         "fullname": choice,
@@ -508,4 +512,3 @@ def getFlowerTypes(types):
     for k, v in d.items():
         text+=f"{k}: {v}\n"
     return text
-

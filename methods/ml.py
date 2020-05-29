@@ -1,4 +1,4 @@
-from constants import APIAITOKEN
+from constants.constants import APIAITOKEN
 import apiai, json
 import random
 
