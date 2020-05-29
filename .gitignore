@@ -5,3 +5,4 @@ config/__pycache__
 files/user_data/chat
 files/user_data/cookies_data
 files/user_data/flowers
+files/backups
