@@ -276,7 +276,7 @@ def getExtra(userId):
     return extra if extra<=20 else 20
 
 def whenCanGrowAgain(time):
-    for _ in range(GROWING_TIME_LIMIT+2+1+3):# +3 cos of time difference
+    for _ in range(GROWING_TIME_LIMIT+1+3):# +3 cos of time difference
         if time<24:
             time+=1
         else:

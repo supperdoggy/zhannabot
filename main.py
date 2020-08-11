@@ -188,5 +188,17 @@ def main(message):
     except:
         pass
 
+# returns message data
+@zhanna.message_handler(commands=["info"])
+def getInfo(message):
+    # check for chat and user data base
+    userDataBase(message)
+    # getting answer
+    answer = message
+    # zhanna replies to user
+    zhannaReplies(zhanna, message, answer)
+    # console output for administration
+    consoleOutput(message, answer)
+
 # bot pooling 
 zhanna.polling(none_stop=False, interval=1, timeout=1)
