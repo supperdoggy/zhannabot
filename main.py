@@ -173,6 +173,18 @@ def giveOneFLower(message):
     # console output for administration
     consoleOutput(message, answer)
 
+# returns message data
+@zhanna.message_handler(commands=["info"])
+def getInfo(message):
+    # check for chat and user data base
+    userDataBase(message)
+    # getting answer
+    answer = f"chat id: {message.chat.id}\nuser id: {message.from_user.id}"
+    # zhanna replies to user
+    zhannaReplies(zhanna, message, answer)
+    # console output for administration
+    consoleOutput(message, answer)
+
 # zhanna replyies to text
 @zhanna.message_handler(content_types=["text"])
 def main(message):
@@ -187,18 +199,6 @@ def main(message):
         consoleOutput(message, answer)
     except:
         pass
-
-# returns message data
-@zhanna.message_handler(commands=["info"])
-def getInfo(message):
-    # check for chat and user data base
-    userDataBase(message)
-    # getting answer
-    answer = message
-    # zhanna replies to user
-    zhannaReplies(zhanna, message, answer)
-    # console output for administration
-    consoleOutput(message, answer)
 
 # bot pooling 
 zhanna.polling(none_stop=False, interval=1, timeout=1)
