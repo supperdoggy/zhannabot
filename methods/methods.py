@@ -248,7 +248,10 @@ def canGrowFlower(data):
         return True
     return False
 
-def flowerDies():
+def flowerDies(chatId):
+    # in this chat flowers dont die
+    if chatId == EDEM_CHAT_ID:
+        return True
     return True if random.randint(0, 100) <= CHANCE_OF_DYING_FLOWER else False
 
 def editLastTimePlayedFlower(data):
@@ -288,7 +291,7 @@ def flower(message):
     if not canGrowFlower(data):
         return "цветочки не растут так часто, их можно растить раз в 6 часов, попробуй еще раз в %s:00" %whenCanGrowAgain(data["last_time_played"][3])
 
-    if flowerDies():
+    if flowerDies(message.chat.id):
         writeToGraveYard(data["username"], data["first_name"], data["current_flower"])
         data["current_flower"] = 0
         answer = "йой, кажется твой цветочек умер, обнуляем результаты"
