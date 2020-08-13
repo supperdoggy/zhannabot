@@ -251,7 +251,7 @@ def canGrowFlower(data):
 def flowerDies(chatId):
     # in this chat flowers dont die
     if chatId == EDEM_CHAT_ID:
-        return True
+        return False
     return True if random.randint(0, 100) <= CHANCE_OF_DYING_FLOWER else False
 
 def editLastTimePlayedFlower(data):
