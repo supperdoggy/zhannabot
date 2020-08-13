@@ -6,6 +6,7 @@ from methods.data import *
 import datetime
 from methods.ml import *
 from methods.access import isBanned
+import telebot
 
 def zhannaReplies(zhanna, message, answer):
     try:
@@ -286,6 +287,12 @@ def whenCanGrowAgain(time):
             time=0
     return time
 
+def FlowerGrew(flowerSize):
+    return True if flowerSize>=100 else False
+
+def getEdemUsername():
+    return telebot.TeleBot(TOKEN).get_chat(EDEM_CHAT_ID).username
+
 def flower(message):
     data = getFlowerData(message)
     if not canGrowFlower(data):
@@ -294,12 +301,13 @@ def flower(message):
     if flowerDies(message.chat.id):
         writeToGraveYard(data["username"], data["first_name"], data["current_flower"])
         data["current_flower"] = 0
-        answer = "йой, кажется твой цветочек умер, обнуляем результаты"
+        edemChatUsername = getEdemUsername()
+        answer = f"йой, кажется твой цветочек умер, обнуляем результаты\nЯ создала чатик где больше ни один цветочек не умрет, @{edemChatUsername}"
     else:
         grow = flowerGrows(data["id"])
         data["current_flower"] += grow
 
-        if data["current_flower"] >= 100:
+        if FlowerGrew(data["current_flower"]):
             data["total_amount_of_flowers"] += 1
             data["current_flower"] = 0
             # adding flower new flower type
