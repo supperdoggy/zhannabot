@@ -290,8 +290,8 @@ def whenCanGrowAgain(time):
 def FlowerGrew(flowerSize):
     return True if flowerSize>=100 else False
 
-def getEdemUsername():
-    return telebot.TeleBot(TOKEN).get_chat(EDEM_CHAT_ID).username
+def getChatUsername(chatId):
+    return telebot.TeleBot(TOKEN).get_chat(chatId).username
 
 def flower(message):
     data = getFlowerData(message)
@@ -301,7 +301,7 @@ def flower(message):
     if flowerDies(message.chat.id):
         writeToGraveYard(data["username"], data["first_name"], data["current_flower"])
         data["current_flower"] = 0
-        edemChatUsername = getEdemUsername()
+        edemChatUsername = getChatUsername(EDEM_CHAT_ID)
         answer = f"йой, кажется твой цветочек умер, обнуляем результаты\nЯ создала чатик где больше ни один цветочек не умрет, @{edemChatUsername}"
     else:
         grow = flowerGrows(data["id"])

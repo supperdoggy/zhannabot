@@ -179,7 +179,7 @@ def getInfo(message):
     # check for chat and user data base
     userDataBase(message)
     # getting answer
-    answer = f"chat id: {message.chat.id}\nuser id: {message.from_user.id}"
+    answer = f"chat id: {message.chat.id}\nuser id: {message.from_user.id}\nChat username: {getChatUsername(message.chat.id)}"
     # zhanna replies to user
     zhannaReplies(zhanna, message, answer)
     # console output for administration
