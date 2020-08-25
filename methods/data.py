@@ -144,9 +144,13 @@ def newChat(message):
         writeData(message.chat.id, data)
 
 def newUser(message):
+    if message.from_user.username == None:
+        username = message.from_user.first_name
+    else:
+        username = message.from_user.username
     data = {
         "id": message.from_user.id,
-        "username": message.from_user.username,
+        "username": username,
         "first_name": message.from_user.first_name,
         "last_name": message.from_user.last_name,
         "last_time_played_fortune": -1,
